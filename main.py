@@ -16,32 +16,67 @@ progress_db = [
 class ProgressRequest(BaseModel):
     problem_number: int
 
-# We pre-cache LeetCode 1 so automated GitHub Action tests don't fail if LeetCode blocks the request
+# Cache to store problems so we don't query the same one twice
 leetcode_cache = {
     1: {"title": "LeetCode 1: Two Sum", "difficulty": "Easy", "topic": "Algorithms"}
 }
 
 def fetch_leetcode_data(problem_number: int):
-    # If the cache is mostly empty, fetch the entire problem list from LeetCode
-    if len(leetcode_cache) <= 1:
-        try:
-            resp = httpx.get("https://leetcode.com/api/problems/algorithms/", headers={"User-Agent": "Mozilla/5.0"}, timeout=10.0)
-            if resp.status_code == 200:
-                data = resp.json()
-                diff_map = {1: "Easy", 2: "Medium", 3: "Hard"}
-                for pair in data.get("stat_status_pairs", []):
-                    fid = pair["stat"]["frontend_question_id"]
-                    title = pair["stat"]["question__title"]
-                    lvl = pair["difficulty"]["level"]
-                    leetcode_cache[fid] = {
-                        "title": f"LeetCode {fid}: {title}",
-                        "difficulty": diff_map.get(lvl, "Medium"),
-                        "topic": "Algorithms" # LeetCode's public API groups all under Algorithms
+    # If we already searched this problem, return it instantly
+    if problem_number in leetcode_cache:
+        return leetcode_cache[problem_number]
+        
+    url = "https://leetcode.com/graphql"
+    query = """
+    query problemsetQuestionList($categorySlug: String, $limit: Int, $skip: Int, $filters: QuestionListFilterInput) {
+      problemsetQuestionList: questionList(
+        categorySlug: $categorySlug
+        limit: $limit
+        skip: $skip
+        filters: $filters
+      ) {
+        data {
+          difficulty
+          questionFrontendId
+          title
+          topicTags { name }
+        }
+      }
+    }
+    """
+    payload = {
+        "query": query,
+        "variables": {
+            "categorySlug": "",
+            "skip": 0,
+            "limit": 10, # Get a few results to ensure we find the exact match
+            "filters": {"searchKeywords": str(problem_number)}
+        }
+    }
+    
+    try:
+        # Send a targeted, lightweight GraphQL request
+        resp = httpx.post(url, json=payload, headers={"User-Agent": "Mozilla/5.0", "Content-Type": "application/json"}, timeout=8.0)
+        if resp.status_code == 200:
+            questions = resp.json().get("data", {}).get("problemsetQuestionList", {}).get("data", [])
+            for q in questions:
+                # Find the exact problem ID from the search results
+                if str(q.get("questionFrontendId")) == str(problem_number):
+                    topics = q.get("topicTags", [])
+                    # Grab the first topic tag, default to Algorithms if none exists
+                    topic_name = topics[0]["name"] if topics else "Algorithms"
+                    
+                    result = {
+                        "title": f"LeetCode {problem_number}: {q.get('title')}",
+                        "difficulty": q.get("difficulty"),
+                        "topic": topic_name
                     }
-        except Exception:
-            pass # Fails silently and lets the None-check handle the error
-            
-    return leetcode_cache.get(problem_number)
+                    leetcode_cache[problem_number] = result
+                    return result
+    except Exception as e:
+        print(f"Error fetching from LeetCode API: {e}")
+        
+    return None
 
 @app.get("/", response_class=HTMLResponse)
 def read_root():
@@ -96,7 +131,7 @@ def read_root():
             
             <div class="form-row">
                 <div class="form-group">
-                    <input type="number" id="problem" placeholder="Enter LeetCode Problem Number (e.g., 1)" min="1">
+                    <input type="number" id="problem" placeholder="Enter LeetCode Problem Number (e.g., 462)" min="1">
                 </div>
             </div>
             <button onclick="addProgress()">Log Progress</button>
@@ -143,7 +178,7 @@ def read_root():
                 const data = await response.json();
                 
                 if (!response.ok) {
-                    alert("Error: " + data.detail); // Displays 400 or 404 errors
+                    alert("Error: " + data.detail); 
                     return;
                 }
                 
@@ -163,16 +198,13 @@ def get_progress():
 
 @app.post("/api/progress")
 def add_progress(req: ProgressRequest):
-    # 1. Error Check: Already Solved
     if any(item.get("frontend_id") == req.problem_number for item in progress_db):
         raise HTTPException(status_code=400, detail=f"LeetCode {req.problem_number} is already marked as solved!")
     
-    # 2. Error Check: Invalid Problem Number
     prob_data = fetch_leetcode_data(req.problem_number)
     if not prob_data:
-        raise HTTPException(status_code=404, detail="Invalid LeetCode problem number.")
+        raise HTTPException(status_code=404, detail="Invalid LeetCode problem number or LeetCode API timeout.")
     
-    # 3. Add to Database
     new_id = len(progress_db) + 1
     progress_db.append({
         "id": new_id, 
