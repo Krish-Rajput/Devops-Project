@@ -164,24 +164,45 @@ def read_root():
                 --spacing-lg: 48px;
                 --spacing-xl: 64px;
                 --spacing-xxl: 96px;
+                --spacing-super: 128px;
             }
             body {
                 font-family: 'Inter', -apple-system, sans-serif;
                 background-color: var(--canvas);
                 color: var(--body);
-                margin: 0; padding: var(--spacing-xl) var(--spacing-sm); min-height: 100vh;
-                display: flex; justify-content: center; align-items: flex-start;
+                margin: 0; padding: 0; min-height: 100vh;
+                display: flex; flex-direction: column;
             }
             
-            .container {
-                width: 100%; max-width: 800px;
-                background: var(--canvas);
+            /* Cinematic Hero Band */
+            .hero-band-cinema {
+                width: 100%; box-sizing: border-box;
+                background: linear-gradient(to bottom, rgba(24,24,24,0.4), rgba(24,24,24,1)), url('https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?q=80&w=2560&auto=format&fit=crop') center/cover;
+                padding: var(--spacing-super) var(--spacing-lg) var(--spacing-xxl);
+                border-bottom: 1px solid var(--hairline);
+            }
+            .hero-header {
+                max-width: 1280px; margin: 0 auto;
+                display: flex; justify-content: space-between; align-items: flex-end;
+            }
+
+            /* Dashboard Layout */
+            .dashboard-layout {
+                max-width: 1280px; margin: 0 auto; width: 100%; box-sizing: border-box;
+                padding: var(--spacing-xl) var(--spacing-lg) var(--spacing-super);
+                display: grid; grid-template-columns: 2fr 1fr; gap: var(--spacing-xl);
+                flex: 1;
+            }
+            @media (max-width: 1024px) {
+                .dashboard-layout { grid-template-columns: 1fr; }
+                .hero-header { flex-direction: column; align-items: flex-start; gap: var(--spacing-md); }
             }
 
             /* Typography */
-            h1 { font-size: 56px; font-weight: 500; color: var(--ink); margin: 0 0 var(--spacing-xs) 0; line-height: 1.1; letter-spacing: -1.12px; text-transform: uppercase; }
-            h2 { font-size: 36px; font-weight: 500; color: var(--ink); margin: 0 0 var(--spacing-sm) 0; line-height: 1.2; letter-spacing: -0.36px; text-transform: uppercase; }
-            .subtitle { font-size: 18px; font-weight: 400; color: var(--body); margin-bottom: var(--spacing-lg); line-height: 1.5; }
+            h1 { font-size: 56px; font-weight: 500; color: var(--ink); margin: 0; line-height: 1.1; letter-spacing: -1.12px; text-transform: uppercase; }
+            h2 { font-size: 26px; font-weight: 500; color: var(--ink); margin: 0 0 var(--spacing-sm) 0; line-height: 1.5; letter-spacing: 0.195px; text-transform: uppercase; }
+            h3 { font-size: 18px; font-weight: 700; color: var(--ink); margin: 0 0 var(--spacing-xs) 0; text-transform: uppercase; }
+            .subtitle { font-size: 18px; font-weight: 400; color: var(--body); margin-top: 8px; line-height: 1.5; }
 
             /* Buttons */
             .btn-primary {
@@ -202,95 +223,164 @@ def read_root():
             }
             .btn-outline:hover { background: var(--canvas-elevated); }
 
-            /* Stats / Race Positions */
-            .stats-row { display: flex; gap: var(--spacing-md); margin-bottom: var(--spacing-xl); }
-            .stat-box {
-                flex: 1; background: transparent; padding: var(--spacing-sm) 0;
-                border: none; text-align: left;
-            }
-            .stat-value { font-size: 80px; font-weight: 700; color: var(--primary); margin-bottom: 8px; line-height: 1.0; letter-spacing: -1.6px; }
+            /* Telemetry Dash */
+            .telemetry-board { display: flex; gap: var(--spacing-md); margin-bottom: var(--spacing-lg); }
+            .spec-cell { flex: 1; }
+            .stat-value { font-size: 80px; font-weight: 700; color: var(--primary); margin-bottom: 4px; line-height: 1.0; letter-spacing: -1.6px; }
             .stat-label { font-size: 11px; color: var(--ink); font-weight: 600; letter-spacing: 1.1px; text-transform: uppercase; }
+            
+            .progress-bar-container { width: 100%; height: 4px; background: var(--canvas-elevated); margin-top: 12px; }
+            .progress-bar { height: 100%; background: var(--ink); transition: width 0.5s ease; }
+            .progress-bar.hard { background: var(--primary); }
+            .progress-bar.medium { background: var(--body); }
 
             /* Forms */
             .form-row { margin-bottom: var(--spacing-sm); }
             input {
                 width: 100%; padding: 14px 16px; box-sizing: border-box;
-                background: var(--canvas); border: 1px solid var(--hairline);
-                border-radius: 4px; color: var(--ink); font-size: 14px; font-family: inherit; font-weight: 400;
+                background: var(--canvas-elevated); border: 1px solid var(--hairline);
+                border-radius: 0px; color: var(--ink); font-size: 14px; font-family: inherit; font-weight: 400;
                 height: 48px;
             }
             input::placeholder { color: var(--body); }
             input:focus { outline: none; border-color: var(--ink); }
 
-            /* Lists */
-            .progress-list { margin-top: var(--spacing-lg); padding: 0; list-style: none; display: flex; flex-direction: column; gap: var(--spacing-xs);}
+            /* Lists & Feed */
+            .progress-list { padding: 0; list-style: none; display: flex; flex-direction: column; gap: var(--spacing-xs); margin: 0;}
             .progress-item {
-                background: var(--canvas-elevated); padding: var(--spacing-sm);
-                border-radius: 0px; display: flex; justify-content: space-between; align-items: center;
+                background: transparent; padding: var(--spacing-sm) 0;
+                border-bottom: 1px solid var(--hairline); border-radius: 0px; 
+                display: flex; justify-content: space-between; align-items: center;
             }
             .item-info { display: flex; flex-direction: column; gap: 4px; }
             .problem-name { font-weight: 700; color: var(--ink); font-size: 18px; line-height: 1.2; }
-            .topic-tag { font-size: 14px; color: var(--body); font-weight: 400;}
+            .topic-tag { font-size: 13px; color: var(--body); font-weight: 400;}
+            .feed-user { color: var(--primary); font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: 0.65px;}
             
             .badge-pill { 
                 font-size: 11px; font-weight: 600; color: var(--ink); text-transform: uppercase; letter-spacing: 1.1px;
-                background: var(--canvas); padding: 4px 12px; border-radius: 9999px;
+                background: var(--canvas-elevated); padding: 4px 12px; border-radius: 9999px;
             }
 
-            /* Leaderboard */
-            #leaderboard-section { 
-                display: none; background: var(--canvas); 
-                border: 1px solid var(--hairline);
-                padding: var(--spacing-xl) var(--spacing-lg); border-radius: 0px; margin-bottom: var(--spacing-xxl); 
+            /* Architecture Footer */
+            .footer-dark {
+                background: var(--canvas); border-top: 1px solid var(--hairline);
+                padding: var(--spacing-xl) var(--spacing-lg); width: 100%; box-sizing: border-box;
             }
-            #leaderboard-section h2 { text-align: left; margin-bottom: var(--spacing-md); }
-            #leaderboard-section .progress-item { 
-                background: var(--canvas-elevated); border: none; 
-                padding: var(--spacing-sm); border-radius: 0px;
+            .footer-grid {
+                max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--spacing-lg);
             }
-
-            .header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-xl); }
+            .footer-col h4 { color: var(--ink); font-size: 11px; text-transform: uppercase; letter-spacing: 1.1px; margin: 0 0 var(--spacing-sm) 0; }
+            .footer-col p { color: var(--body); font-size: 13px; margin: 0 0 8px 0; }
         </style>
     </head>
     <body>
         
-        <div class="container" id="login-view" style="display: none; text-align: left; margin-top: 15vh;">
-            <h1>Scuderia Tracker</h1>
-            <div class="subtitle">Secure CI/CD Portfolio Project</div>
-            <button class="btn-primary" onclick="window.location.href='/auth/login'">
-                Connect GitHub
-            </button>
+        <!-- Login Screen -->
+        <div id="login-view" style="display: none;">
+            <div class="hero-band-cinema" style="min-height: 100vh; display: flex; flex-direction: column; justify-content: flex-end;">
+                <div class="hero-header" style="flex-direction: column; align-items: flex-start;">
+                    <div>
+                        <h1>Scuderia Tracker</h1>
+                        <div class="subtitle">Secure CI/CD Portfolio Project</div>
+                    </div>
+                    <button class="btn-primary" style="max-width: 300px; margin-top: var(--spacing-md);" onclick="window.location.href='/auth/login'">
+                        Connect GitHub
+                    </button>
+                </div>
+            </div>
         </div>
 
-        <div class="container" id="dashboard-view" style="display: none;">
-            <div class="header-bar">
-                <h1 style="margin: 0; font-size: 36px; letter-spacing: -0.36px;">DSA Tracker</h1>
-                <div style="display: flex; gap: 16px;">
-                    <button class="btn-outline" onclick="toggleLeaderboard()">Leaderboard</button>
+        <!-- Dashboard Screen -->
+        <div id="dashboard-view" style="display: none; width: 100%;">
+            
+            <div class="hero-band-cinema">
+                <div class="hero-header">
+                    <div>
+                        <h1>DSA Progress Tracker</h1>
+                        <div class="subtitle">Engineering precision. Automated streaks.</div>
+                    </div>
                     <button class="btn-outline" onclick="window.location.href='/auth/logout'">Sign out <span id="username-display" style="text-transform: none; letter-spacing: 0;"></span></button>
                 </div>
             </div>
-            
-            <div id="leaderboard-section">
-                <h2>Room 101 Leaderboard</h2>
-                <ul class="progress-list" id="leaderboard-list" style="margin-top: 0;"></ul>
-            </div>
 
-            <div class="stats-row">
-                <div class="stat-box">
-                    <div class="stat-value" id="total-solved">0</div>
-                    <div class="stat-label">Problems Solved</div>
+            <div class="dashboard-layout">
+                <!-- Left Column: Telemetry & Input -->
+                <div class="main-column">
+                    <h2>Telemetry Profile</h2>
+                    
+                    <div class="telemetry-board">
+                        <div class="spec-cell">
+                            <div class="stat-value" id="total-solved">0</div>
+                            <div class="stat-label">Total Completed</div>
+                        </div>
+                        <div class="spec-cell">
+                            <div class="stat-value" style="color: var(--ink);" id="easy-solved">0</div>
+                            <div class="stat-label">Easy</div>
+                            <div class="progress-bar-container"><div class="progress-bar" id="bar-easy" style="width: 0%;"></div></div>
+                        </div>
+                        <div class="spec-cell">
+                            <div class="stat-value" style="color: var(--body);" id="med-solved">0</div>
+                            <div class="stat-label">Medium</div>
+                            <div class="progress-bar-container"><div class="progress-bar medium" id="bar-med" style="width: 0%;"></div></div>
+                        </div>
+                        <div class="spec-cell">
+                            <div class="stat-value" style="color: var(--primary);" id="hard-solved">0</div>
+                            <div class="stat-label">Hard</div>
+                            <div class="progress-bar-container"><div class="progress-bar hard" id="bar-hard" style="width: 0%;"></div></div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row" style="margin-top: var(--spacing-lg);">
+                        <input type="number" id="problem" placeholder="Enter LeetCode Problem Number (e.g., 462)" min="1">
+                    </div>
+                    <button class="btn-primary" id="submit-btn" onclick="addProgress()">
+                        <span id="btn-text">Push to GitHub Streak</span>
+                    </button>
+                    
+                    <h3 style="margin-top: var(--spacing-xl); border-bottom: 1px solid var(--hairline); padding-bottom: var(--spacing-xs);">Your Logs</h3>
+                    <ul class="progress-list" id="list"></ul>
+                </div>
+
+                <!-- Right Column: Live Feed & Leaderboard -->
+                <div class="side-column">
+                    <h2>Room 101 Leaderboard</h2>
+                    <ul class="progress-list" id="leaderboard-list" style="margin-bottom: var(--spacing-xl);"></ul>
+                    
+                    <h2>Live Activity Feed</h2>
+                    <ul class="progress-list" id="activity-list"></ul>
                 </div>
             </div>
             
-            <div class="form-row">
-                <input type="number" id="problem" placeholder="Enter LeetCode Problem Number (e.g., 462)" min="1">
-            </div>
-            <button class="btn-primary" id="submit-btn" onclick="addProgress()">
-                <span id="btn-text">Push to GitHub Streak</span>
-            </button>
-            
-            <ul class="progress-list" id="list"></ul>
+            <!-- Architecture Footer -->
+            <footer class="footer-dark">
+                <div class="footer-grid">
+                    <div class="footer-col">
+                        <h4>Frontend UI</h4>
+                        <p>Ferrari Design System</p>
+                        <p>Vanilla JS & CSS3</p>
+                        <p>HTMLResponse Rendering</p>
+                    </div>
+                    <div class="footer-col">
+                        <h4>Backend Core</h4>
+                        <p>Python 3.11</p>
+                        <p>FastAPI Framework</p>
+                        <p>LeetCode GraphQL API</p>
+                    </div>
+                    <div class="footer-col">
+                        <h4>Database & Auth</h4>
+                        <p>MongoDB Atlas Cluster</p>
+                        <p>GitHub OAuth App</p>
+                        <p>Pymongo Driver</p>
+                    </div>
+                    <div class="footer-col">
+                        <h4>DevOps Pipeline</h4>
+                        <p>GitHub Actions CI/CD</p>
+                        <p>Docker Containerization</p>
+                        <p>Vercel Production Hosting</p>
+                    </div>
+                </div>
+            </footer>
         </div>
         
         <script>
@@ -306,49 +396,29 @@ def read_root():
             if (!activeUser) {
                 document.getElementById('login-view').style.display = 'block';
             } else {
-                document.getElementById('dashboard-view').style.display = 'block';
+                document.getElementById('dashboard-view').style.display = 'flex';
                 document.getElementById('username-display').innerText = `(${activeUser})`;
-                loadProgress();
+                loadDashboard();
             }
 
-            async function toggleLeaderboard() {
-                const lbSection = document.getElementById('leaderboard-section');
-                if (lbSection.style.display === 'none') {
-                    lbSection.style.display = 'block';
-                    
-                    const response = await fetch('/api/leaderboard');
-                    if (response.ok) {
-                        const data = await response.json();
-                        const list = document.getElementById('leaderboard-list');
-                        list.innerHTML = '';
-                        
-                        data.forEach((user, index) => {
-                            list.innerHTML += `
-                            <li class="progress-item" style="justify-content: flex-start; gap: 32px;">
-                                <div style="font-size: 80px; font-weight: 700; color: var(--primary); width: 60px; line-height: 1.0; letter-spacing: -1.6px;">${index + 1}</div>
-                                <div class="problem-name">${user.username}</div>
-                                <div class="badge-pill" style="margin-left: auto; background: var(--canvas);">${user.solved} solved</div>
-                            </li>`;
-                        });
-                    }
-                } else {
-                    lbSection.style.display = 'none';
-                }
+            async function loadDashboard() {
+                await Promise.all([loadProgress(), loadLeaderboard(), loadActivity()]);
             }
 
             async function loadProgress() {
                 const response = await fetch('/api/progress');
-                if (response.status === 401) {
-                    window.location.href = '/auth/login';
-                    return;
-                }
+                if (response.status === 401) { window.location.href = '/auth/login'; return; }
                 const data = await response.json();
                 
-                document.getElementById('total-solved').innerText = data.length;
+                let easy = 0, med = 0, hard = 0;
                 const list = document.getElementById('list');
                 list.innerHTML = '';
                 
                 data.slice().reverse().forEach((item) => {
+                    if (item.difficulty === 'Easy') easy++;
+                    if (item.difficulty === 'Medium') med++;
+                    if (item.difficulty === 'Hard') hard++;
+                    
                     list.innerHTML += `
                     <li class="progress-item">
                         <div class="item-info">
@@ -358,14 +428,59 @@ def read_root():
                         <span class="badge-pill">${item.difficulty}</span>
                     </li>`;
                 });
+                
+                const total = data.length;
+                document.getElementById('total-solved').innerText = total;
+                document.getElementById('easy-solved').innerText = easy;
+                document.getElementById('med-solved').innerText = med;
+                document.getElementById('hard-solved').innerText = hard;
+                
+                document.getElementById('bar-easy').style.width = total ? (easy/total)*100 + '%' : '0%';
+                document.getElementById('bar-med').style.width = total ? (med/total)*100 + '%' : '0%';
+                document.getElementById('bar-hard').style.width = total ? (hard/total)*100 + '%' : '0%';
+            }
+
+            async function loadLeaderboard() {
+                const response = await fetch('/api/leaderboard');
+                if (response.ok) {
+                    const data = await response.json();
+                    const list = document.getElementById('leaderboard-list');
+                    list.innerHTML = '';
+                    
+                    data.forEach((user, index) => {
+                        list.innerHTML += `
+                        <li class="progress-item" style="border:none; padding: 8px 0;">
+                            <div style="font-size: 26px; font-weight: 700; color: var(--primary); width: 30px; letter-spacing: -0.36px;">${index + 1}</div>
+                            <div class="problem-name" style="flex: 1;">${user.username}</div>
+                            <div class="stat-label">${user.solved} solved</div>
+                        </li>`;
+                    });
+                }
+            }
+            
+            async function loadActivity() {
+                const response = await fetch('/api/activity');
+                if (response.ok) {
+                    const data = await response.json();
+                    const list = document.getElementById('activity-list');
+                    list.innerHTML = '';
+                    
+                    data.forEach((item) => {
+                        list.innerHTML += `
+                        <li class="progress-item">
+                            <div class="item-info">
+                                <span class="feed-user">${item.username}</span>
+                                <span class="problem-name" style="font-size: 14px; font-weight: 500;">Solved ${item.problem}</span>
+                            </div>
+                            <span class="badge-pill" style="background: transparent; border: 1px solid var(--hairline);">${item.difficulty}</span>
+                        </li>`;
+                    });
+                }
             }
 
             async function addProgress() {
                 const problemNum = document.getElementById('problem').value;
-                if (!problemNum) {
-                    alert("Please enter a problem number.");
-                    return;
-                }
+                if (!problemNum) { alert("Please enter a problem number."); return; }
 
                 const btn = document.getElementById('submit-btn');
                 const btnText = document.getElementById('btn-text');
@@ -386,18 +501,10 @@ def read_root():
                 btn.style.pointerEvents = "auto";
                 btnText.innerText = "Push to GitHub Streak";
                 
-                if (!response.ok) {
-                    alert("Error: " + (data.detail || "Authentication required")); 
-                    return;
-                }
+                if (!response.ok) { alert("Error: " + (data.detail || "Authentication required")); return; }
                 
                 document.getElementById('problem').value = '';
-                loadProgress();
-                
-                if (document.getElementById('leaderboard-section').style.display === 'block') {
-                    document.getElementById('leaderboard-section').style.display = 'none';
-                    toggleLeaderboard();
-                }
+                loadDashboard();
             }
         </script>
     </body>
@@ -460,3 +567,12 @@ def get_leaderboard(github_user: Optional[str] = Cookie(None)):
     
     leaderboard = [{"username": r["_id"], "solved": r["solved"]} for r in results]
     return leaderboard
+
+@app.get("/api/activity")
+def get_activity(github_user: Optional[str] = Cookie(None)):
+    if not github_user:
+        raise HTTPException(status_code=401, detail="Unauthorized. Please log in.")
+    
+    # Fetches the 10 most recent globally solved problems across all users
+    results = list(collection.find({}, {"_id": 0}).sort("_id", -1).limit(10))
+    return results
