@@ -148,179 +148,164 @@ def read_root():
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
         <style>
             :root {
-                --install-green-top: #a4d007;
-                --install-green-mid: #799905;
-                --install-green-bottom: #5c7e10;
-                --install-highlight: #beee11;
-                --cta-cyan-bright: #06bfff;
-                --cta-cyan-mid: #2881a7;
-                --cta-blue: #2d73ff;
-                --canvas: #1b2838;
-                --rail: #141f2c;
-                --tile: #283645;
-                --inset: #384959;
-                --on-canvas: #ffffff;
-                --subtitle: #c6d4df;
-                --body-mute: #8b929a;
-                --shadow: #000000;
-                --radius-xs: 2px;
+                --canvas: #000000;
+                --surface-card: #1a1a1a;
+                --surface-soft: #0d0d0d;
+                --ink: #ffffff;
+                --body: #bbbbbb;
+                --hairline: #3c3c3c;
+                --m-blue-light: #0066b1;
+                --m-blue-dark: #1c69d4;
+                --m-red: #e22718;
+                --spacing-md: 16px;
+                --spacing-lg: 24px;
+                --spacing-xl: 40px;
+                --spacing-section: 96px;
             }
             body {
-                font-family: Arial, Helvetica, sans-serif;
+                font-family: 'Inter', sans-serif;
                 background-color: var(--canvas);
-                color: var(--subtitle);
+                color: var(--body);
                 margin: 0; padding: 0; min-height: 100vh;
                 display: flex; flex-direction: column;
-                font-size: 13px;
+                font-weight: 300;
             }
             
-            h1, h2, h3, .brand-font {
-                font-family: 'Inter', sans-serif; /* Motiva Sans fallback */
-                color: var(--on-canvas);
-                margin: 0;
+            /* Typography */
+            h1 { font-size: 56px; font-weight: 700; color: var(--ink); margin: 0; line-height: 1.05; text-transform: uppercase; letter-spacing: -0.5px; }
+            h2 { font-size: 40px; font-weight: 700; color: var(--ink); margin: 0 0 var(--spacing-lg) 0; line-height: 1.1; text-transform: uppercase; }
+            h3 { font-size: 24px; font-weight: 700; color: var(--ink); margin: 0 0 var(--spacing-md) 0; text-transform: uppercase; }
+            .subtitle { font-size: 16px; font-weight: 300; color: var(--body); margin-top: 16px; line-height: 1.5; }
+
+            /* M Tricolor Divider */
+            .m-stripe-divider {
+                width: 100%; height: 4px;
+                background: linear-gradient(90deg, var(--m-blue-light) 0%, var(--m-blue-light) 33.3%, var(--m-blue-dark) 33.3%, var(--m-blue-dark) 66.6%, var(--m-red) 66.6%, var(--m-red) 100%);
             }
 
-            /* Global Rail (Header) */
-            .primary-nav {
-                background-color: var(--rail);
-                height: 104px;
-                display: flex; align-items: center; justify-content: center;
-                box-shadow: inset 0 -1px 0 var(--shadow);
+            /* Global Header */
+            .top-nav {
+                background-color: var(--canvas);
+                height: 64px; display: flex; align-items: center; justify-content: center;
+                border-bottom: 1px solid var(--hairline);
+                position: sticky; top: 0; z-index: 100;
             }
             .nav-content {
-                width: 100%; max-width: 940px;
+                width: 100%; max-width: 1440px;
                 display: flex; justify-content: space-between; align-items: center;
-                padding: 0 16px;
+                padding: 0 var(--spacing-lg);
             }
-            .nav-title {
-                font-size: 26px; font-weight: 500; letter-spacing: 1.104px; text-transform: uppercase;
-            }
-            .nav-actions { display: flex; gap: 10px; }
+            .nav-title { font-size: 20px; font-weight: 700; color: var(--ink); text-transform: uppercase; }
+            .nav-actions { display: flex; gap: 24px; align-items: center; }
 
             /* Buttons */
-            .button-install {
-                background: linear-gradient(to bottom, var(--install-green-top), var(--install-green-bottom));
-                border: none; border-top: 1px solid var(--install-highlight);
-                color: var(--on-canvas); font-family: 'Inter', Arial, sans-serif;
-                font-size: 13px; font-weight: 400; border-radius: var(--radius-xs);
-                padding: 6px 15px; height: 31px; cursor: pointer;
-                display: flex; justify-content: center; align-items: center;
-                text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+            .button-primary {
+                background-color: var(--ink); color: var(--canvas);
+                border: none; border-radius: 0px; 
+                font-size: 14px; font-weight: 700; line-height: 1.0; letter-spacing: 1.5px; text-transform: uppercase;
+                padding: 16px 32px; height: 48px; cursor: pointer; font-family: inherit;
+                display: flex; justify-content: center; align-items: center; transition: opacity 0.2s;
             }
-            .button-install:hover { background: var(--install-green-top); }
-
-            .button-cta {
-                background: linear-gradient(to bottom, var(--cta-cyan-bright), var(--cta-cyan-mid));
-                border: none; border-radius: var(--radius-xs);
-                color: var(--on-canvas); font-family: 'Inter', Arial, sans-serif;
-                font-size: 13px; font-weight: 400; padding: 6px 12px; height: 31px;
-                cursor: pointer; display: flex; justify-content: center; align-items: center;
-            }
-            .button-cta:hover { background: var(--cta-cyan-bright); }
+            .button-primary:hover { opacity: 0.8; }
             
-            .button-secondary {
-                background-color: var(--inset); border: none; border-radius: var(--radius-xs);
-                color: var(--subtitle); font-family: 'Inter', Arial, sans-serif;
-                font-size: 13px; font-weight: 400; padding: 6px 12px; height: 31px;
-                cursor: pointer;
+            .button-outline {
+                background: transparent; color: var(--ink); border: 1px solid var(--ink); 
+                font-size: 14px; font-weight: 700; line-height: 1.0; letter-spacing: 1.5px; text-transform: uppercase;
+                padding: 15px 32px; height: 48px; cursor: pointer; font-family: inherit;
+                transition: background 0.2s; border-radius: 0px;
             }
-            .button-secondary:hover { color: var(--on-canvas); }
+            .button-outline:hover { background: var(--surface-card); }
+            
+            .text-link {
+                background: transparent; color: var(--ink); border: none; 
+                font-size: 14px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+                cursor: pointer; font-family: inherit; padding: 0;
+            }
 
             /* Dashboard Layout */
             .dashboard-layout {
-                max-width: 940px; margin: 24px auto 96px; width: 100%; box-sizing: border-box;
-                display: grid; grid-template-columns: 2fr 1fr; gap: 24px; padding: 0 16px;
+                max-width: 1440px; margin: 0 auto; width: 100%; box-sizing: border-box;
+                display: grid; grid-template-columns: 2fr 1fr; gap: var(--spacing-xl); padding: var(--spacing-section) var(--spacing-lg);
             }
-            @media (max-width: 768px) {
+            @media (max-width: 1024px) {
                 .dashboard-layout { grid-template-columns: 1fr; }
             }
 
-            /* Featured Strip / Sections */
-            .featured-strip {
-                background-color: var(--inset); color: var(--on-canvas);
-                padding: 16px 24px; border-radius: var(--radius-xs); margin-bottom: 16px;
+            /* Hero Image Band */
+            .hero-photo-band {
+                width: 100%; min-height: 50vh;
+                background: linear-gradient(to right, rgba(0,0,0,0.9) 10%, rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1555626906-fcf10d6851b4?q=80&w=2560&auto=format&fit=crop') center/cover;
+                display: flex; align-items: center; padding: 0 var(--spacing-lg);
+                border-bottom: 1px solid var(--hairline);
             }
-            .featured-strip h2 { font-size: 24px; font-weight: 300; }
-            
-            .section-header { font-size: 14px; font-weight: 500; color: var(--on-canvas); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;}
 
-            /* Telemetry Dash (Game Tiles) */
-            .telemetry-board { display: flex; gap: 10px; margin-bottom: 24px; }
-            .game-tile {
-                flex: 1; background-color: var(--tile); padding: 12px;
-                border-radius: var(--radius-xs);
+            /* Spec Cells (Telemetry) */
+            .telemetry-board { display: flex; gap: 2px; margin-bottom: var(--spacing-xl); background: var(--hairline); }
+            .spec-cell {
+                flex: 1; background-color: var(--surface-soft); padding: var(--spacing-lg);
+                display: flex; flex-direction: column; align-items: flex-start;
             }
-            .stat-value { font-family: 'Inter', sans-serif; font-size: 26px; font-weight: 300; color: var(--on-canvas); margin-bottom: 4px; }
-            .stat-label { font-size: 11px; color: var(--body-mute); text-transform: uppercase; }
-            
-            .progress-bar-container { width: 100%; height: 4px; background: var(--rail); margin-top: 8px; border-radius: var(--radius-xs); }
-            .progress-bar { height: 100%; background: var(--cta-cyan-mid); border-radius: var(--radius-xs); transition: width 0.5s ease; }
-            .progress-bar.hard { background: var(--install-green-mid); }
-            .progress-bar.medium { background: var(--cta-blue); }
+            .stat-value { font-size: 32px; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
+            .stat-label { font-size: 14px; font-weight: 700; color: var(--body); letter-spacing: 1.5px; text-transform: uppercase; }
 
             /* Forms */
-            .form-row { margin-bottom: 16px; }
+            .form-row { margin-bottom: var(--spacing-md); }
             .text-input {
-                width: 100%; padding: 0 10px; box-sizing: border-box;
-                background-color: var(--rail); border: 1px solid var(--inset);
-                border-radius: var(--radius-xs); color: var(--on-canvas); font-size: 13px; font-family: Arial, sans-serif;
-                height: 34px;
+                width: 100%; padding: 12px 16px; box-sizing: border-box;
+                background-color: var(--surface-card); border: 1px solid var(--hairline);
+                border-radius: 0px; color: var(--ink); font-size: 16px; font-weight: 300; font-family: inherit;
+                height: 48px;
             }
-            .text-input::placeholder { color: var(--body-mute); }
-            .text-input:focus { outline: none; border-color: var(--cta-cyan-mid); }
+            .text-input::placeholder { color: var(--muted); }
+            .text-input:focus { outline: none; border-color: var(--ink); }
 
-            /* Lists & Feed */
-            .progress-list { padding: 0; list-style: none; display: flex; flex-direction: column; gap: 5px; margin: 0;}
-            .progress-item {
-                background-color: var(--tile); padding: 8px 12px;
-                border-radius: var(--radius-xs); display: flex; justify-content: space-between; align-items: center;
+            /* Grids & Cards */
+            .progress-list { padding: 0; list-style: none; display: flex; flex-direction: column; gap: var(--spacing-md); margin: 0;}
+            .feature-photo-card {
+                background-color: var(--surface-card); padding: var(--spacing-lg);
+                border-radius: 0px; display: flex; justify-content: space-between; align-items: center;
+                border: 1px solid var(--hairline);
             }
-            .item-info { display: flex; flex-direction: column; gap: 2px; }
-            .problem-name { font-family: 'Inter', sans-serif; font-weight: 500; color: var(--on-canvas); font-size: 15px; }
-            .topic-tag { font-size: 12px; color: var(--subtitle); }
-            .feed-user { color: var(--cta-cyan-link); font-weight: 400; font-size: 12px; }
+            .item-info { display: flex; flex-direction: column; gap: 4px; }
+            .problem-name { font-weight: 700; color: var(--ink); font-size: 20px; line-height: 1.4; text-transform: uppercase; }
+            .topic-tag { font-size: 14px; font-weight: 300; color: var(--body); }
             
-            .category-pill { 
-                font-size: 12px; font-weight: 500; color: var(--subtitle); 
-                background-color: var(--inset); padding: 4px 8px; border-radius: var(--radius-xs);
+            .label-uppercase { 
+                font-size: 14px; font-weight: 700; color: var(--ink); text-transform: uppercase; letter-spacing: 1.5px;
             }
 
             /* Architecture Footer */
-            .footer-section {
-                background-color: var(--rail); padding: 24px 16px; width: 100%; box-sizing: border-box;
-                margin-top: auto; border-top: 1px solid var(--shadow);
+            .footer {
+                background-color: var(--canvas); padding: 64px var(--spacing-lg); width: 100%; box-sizing: border-box;
+                border-top: 1px solid var(--hairline); margin-top: auto;
             }
             .footer-grid {
-                max-width: 940px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 24px;
+                max-width: 1440px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--spacing-xl);
             }
-            .footer-col h4 { color: var(--on-canvas); font-size: 12px; text-transform: uppercase; margin: 0 0 10px 0; }
-            .footer-col p { color: var(--body-mute); font-size: 11px; margin: 0 0 6px 0; line-height: 12px; }
+            .footer-col h4 { color: var(--ink); font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; margin: 0 0 var(--spacing-md) 0; }
+            .footer-col p { color: var(--body); font-size: 14px; font-weight: 300; margin: 0 0 12px 0; }
         </style>
     </head>
     <body>
         
-        <!-- Global Header -->
-        <div class="primary-nav">
+        <div class="m-stripe-divider"></div>
+        <div class="top-nav">
             <div class="nav-content">
                 <div class="nav-title">DSA PROGRESS TRACKER</div>
-                <div class="nav-actions" id="nav-actions-container">
-                    <!-- Injected via JS based on auth state -->
-                </div>
+                <div class="nav-actions" id="nav-actions-container"></div>
             </div>
         </div>
 
         <!-- Login Screen -->
         <div id="login-view" style="display: none;">
-            <div class="dashboard-layout" style="grid-template-columns: 1fr; max-width: 600px; text-align: center;">
-                <div class="featured-strip">
-                    <h2 style="margin-bottom: 16px;">Welcome to the Tracker</h2>
-                    <p style="color: var(--subtitle); font-size: 15px; margin-bottom: 24px;">Secure CI/CD Portfolio Project.</p>
-                    <button class="button-install" style="margin: 0 auto; width: auto; padding: 6px 32px;" onclick="window.location.href='/auth/login'">
-                        Connect GitHub
-                    </button>
+            <div class="hero-photo-band">
+                <div style="max-width: 1440px; margin: 0 auto; width: 100%;">
+                    <h1>ENGINEERED<br>FOR STREAKS.</h1>
+                    <div class="subtitle" style="max-width: 400px; margin-bottom: 40px;">Secure CI/CD Portfolio Project. True black canvas, sharp geometry, automated tracking.</div>
+                    <button class="button-primary" style="width: auto;" onclick="window.location.href='/auth/login'">CONNECT GITHUB</button>
                 </div>
             </div>
         </div>
@@ -331,76 +316,75 @@ def read_root():
             <div class="dashboard-layout">
                 <!-- Left Column: Telemetry & Input -->
                 <div class="main-column">
-                    <div class="section-header">Telemetry Profile</div>
+                    <h2>TELEMETRY PROFILE</h2>
                     
                     <div class="telemetry-board">
-                        <div class="game-tile">
+                        <div class="spec-cell">
                             <div class="stat-value" id="total-solved">0</div>
-                            <div class="stat-label">Total Completed</div>
+                            <div class="stat-label">TOTAL SOLVED</div>
                         </div>
-                        <div class="game-tile">
+                        <div class="spec-cell">
                             <div class="stat-value" id="easy-solved">0</div>
-                            <div class="stat-label">Easy</div>
-                            <div class="progress-bar-container"><div class="progress-bar" id="bar-easy" style="width: 0%;"></div></div>
+                            <div class="stat-label">EASY</div>
                         </div>
-                        <div class="game-tile">
+                        <div class="spec-cell">
                             <div class="stat-value" id="med-solved">0</div>
-                            <div class="stat-label">Medium</div>
-                            <div class="progress-bar-container"><div class="progress-bar medium" id="bar-med" style="width: 0%;"></div></div>
+                            <div class="stat-label">MEDIUM</div>
                         </div>
-                        <div class="game-tile">
-                            <div class="stat-value" id="hard-solved">0</div>
-                            <div class="stat-label">Hard</div>
-                            <div class="progress-bar-container"><div class="progress-bar hard" id="bar-hard" style="width: 0%;"></div></div>
+                        <div class="spec-cell">
+                            <div class="stat-value" id="hard-solved" style="color: var(--m-red);">0</div>
+                            <div class="stat-label" style="color: var(--ink);">HARD</div>
                         </div>
                     </div>
                     
-                    <div class="featured-strip" style="background-color: var(--tile);">
-                        <div class="form-row">
+                    <div class="feature-photo-card" style="margin-top: var(--spacing-lg); flex-direction: column; align-items: stretch; gap: var(--spacing-md);">
+                        <h3 style="font-size: 18px; margin: 0;">LOG PROGRESS</h3>
+                        <div class="form-row" style="margin: 0;">
                             <input type="number" id="problem" class="text-input" placeholder="Enter LeetCode Problem Number (e.g., 462)" min="1">
                         </div>
-                        <button class="button-install" id="submit-btn" style="width: 100%;" onclick="addProgress()">
-                            <span id="btn-text">Push to GitHub Streak</span>
+                        <button class="button-outline" id="submit-btn" style="width: 100%;" onclick="addProgress()">
+                            <span id="btn-text">PUSH TO GITHUB STREAK</span>
                         </button>
                     </div>
                     
-                    <div class="section-header" style="margin-top: 24px;">Your Library</div>
+                    <h2 style="margin-top: var(--spacing-section);">YOUR LOGS</h2>
+                    <div class="m-stripe-divider" style="margin-bottom: var(--spacing-lg);"></div>
                     <ul class="progress-list" id="list"></ul>
                 </div>
 
                 <!-- Right Column: Live Feed & Leaderboard -->
                 <div class="side-column">
-                    <div class="section-header">Room 101 Leaderboard</div>
-                    <ul class="progress-list" id="leaderboard-list" style="margin-bottom: 24px;"></ul>
+                    <h2>ROOM 101 LEADERBOARD</h2>
+                    <ul class="progress-list" id="leaderboard-list" style="margin-bottom: var(--spacing-section);"></ul>
                     
-                    <div class="section-header">Community Activity</div>
+                    <h2>LIVE FEED</h2>
+                    <div class="m-stripe-divider" style="margin-bottom: var(--spacing-lg);"></div>
                     <ul class="progress-list" id="activity-list"></ul>
                 </div>
             </div>
             
-            <!-- Architecture Footer -->
-            <footer class="footer-section">
+            <footer class="footer">
                 <div class="footer-grid">
                     <div class="footer-col">
-                        <h4 class="brand-font">Frontend UI</h4>
-                        <p>Steam Design System</p>
+                        <h4>FRONTEND UI</h4>
+                        <p>BMW M Design System</p>
                         <p>Vanilla JS & CSS3</p>
                         <p>HTMLResponse Rendering</p>
                     </div>
                     <div class="footer-col">
-                        <h4 class="brand-font">Backend Core</h4>
+                        <h4>BACKEND CORE</h4>
                         <p>Python 3.11</p>
                         <p>FastAPI Framework</p>
                         <p>LeetCode GraphQL API</p>
                     </div>
                     <div class="footer-col">
-                        <h4 class="brand-font">Database & Auth</h4>
+                        <h4>DATABASE & AUTH</h4>
                         <p>MongoDB Atlas Cluster</p>
                         <p>GitHub OAuth App</p>
                         <p>Pymongo Driver</p>
                     </div>
                     <div class="footer-col">
-                        <h4 class="brand-font">DevOps Pipeline</h4>
+                        <h4>DEVOPS PIPELINE</h4>
                         <p>GitHub Actions CI/CD</p>
                         <p>Docker Containerization</p>
                         <p>Vercel Production Hosting</p>
@@ -422,12 +406,12 @@ def read_root():
 
             if (!activeUser) {
                 document.getElementById('login-view').style.display = 'block';
-                navActions.innerHTML = `<button class="button-install" onclick="window.location.href='/auth/login'">Login</button>`;
+                navActions.innerHTML = `<button class="text-link" onclick="window.location.href='/auth/login'">LOGIN</button>`;
             } else {
                 document.getElementById('dashboard-view').style.display = 'block';
                 navActions.innerHTML = `
-                    <button class="button-cta" style="pointer-events: none;">${activeUser}</button>
-                    <button class="button-secondary" onclick="window.location.href='/auth/logout'">Logout</button>
+                    <span class="label-uppercase" style="color: var(--body);">${activeUser}</span>
+                    <button class="text-link" onclick="window.location.href='/auth/logout'">SIGN OUT</button>
                 `;
                 loadDashboard();
             }
@@ -451,24 +435,19 @@ def read_root():
                     if (item.difficulty === 'Hard') hard++;
                     
                     list.innerHTML += `
-                    <li class="progress-item">
+                    <li class="feature-photo-card">
                         <div class="item-info">
                             <span class="problem-name">${item.problem}</span>
                             <span class="topic-tag">${item.topic}</span>
                         </div>
-                        <span class="category-pill">${item.difficulty}</span>
+                        <span class="label-uppercase">${item.difficulty}</span>
                     </li>`;
                 });
                 
-                const total = data.length;
-                document.getElementById('total-solved').innerText = total;
+                document.getElementById('total-solved').innerText = data.length;
                 document.getElementById('easy-solved').innerText = easy;
                 document.getElementById('med-solved').innerText = med;
                 document.getElementById('hard-solved').innerText = hard;
-                
-                document.getElementById('bar-easy').style.width = total ? (easy/total)*100 + '%' : '0%';
-                document.getElementById('bar-med').style.width = total ? (med/total)*100 + '%' : '0%';
-                document.getElementById('bar-hard').style.width = total ? (hard/total)*100 + '%' : '0%';
             }
 
             async function loadLeaderboard() {
@@ -479,13 +458,14 @@ def read_root():
                     list.innerHTML = '';
                     
                     data.forEach((user, index) => {
+                        let rankColor = index === 0 ? 'var(--m-red)' : 'var(--ink)';
                         list.innerHTML += `
-                        <li class="progress-item">
-                            <div class="item-info" style="flex-direction: row; align-items: center; gap: 12px;">
-                                <div style="font-family: 'Inter', sans-serif; font-size: 18px; font-weight: 500; color: var(--on-canvas);">${index + 1}</div>
-                                <div class="problem-name" style="font-size: 14px;">${user.username}</div>
+                        <li class="feature-photo-card" style="padding: 16px 24px; border: none; background: transparent; border-bottom: 1px solid var(--hairline);">
+                            <div class="item-info" style="flex-direction: row; align-items: center; gap: 24px;">
+                                <div style="font-size: 24px; font-weight: 700; color: ${rankColor}; width: 24px;">${index + 1}</div>
+                                <div class="problem-name" style="font-size: 16px;">${user.username}</div>
                             </div>
-                            <div class="topic-tag">${user.solved} solved</div>
+                            <div class="label-uppercase" style="color: var(--body);">${user.solved} SOLVED</div>
                         </li>`;
                     });
                 }
@@ -500,9 +480,9 @@ def read_root():
                     
                     data.forEach((item) => {
                         list.innerHTML += `
-                        <li class="progress-item" style="flex-direction: column; align-items: flex-start; gap: 4px;">
-                            <div class="feed-user">${item.username}</div>
-                            <div class="topic-tag">Solved <span style="color: var(--on-canvas); font-family: 'Inter', sans-serif;">${item.problem}</span></div>
+                        <li class="feature-photo-card" style="padding: 16px 24px; border: none; background: transparent; flex-direction: column; align-items: flex-start; gap: 8px;">
+                            <div class="label-uppercase" style="color: var(--m-blue-light);">${item.username}</div>
+                            <div class="subtitle" style="margin: 0; color: var(--ink);">Solved <span style="font-weight: 700;">${item.problem}</span></div>
                         </li>`;
                     });
                 }
@@ -517,7 +497,7 @@ def read_root():
                 
                 btn.style.opacity = "0.5";
                 btn.style.pointerEvents = "none";
-                btnText.innerText = "Processing...";
+                btnText.innerText = "PROCESSING...";
                 
                 const response = await fetch('/api/progress', {
                     method: 'POST',
@@ -529,7 +509,7 @@ def read_root():
                 
                 btn.style.opacity = "1";
                 btn.style.pointerEvents = "auto";
-                btnText.innerText = "Push to GitHub Streak";
+                btnText.innerText = "PUSH TO GITHUB STREAK";
                 
                 if (!response.ok) { alert("Error: " + (data.detail || "Authentication required")); return; }
                 
