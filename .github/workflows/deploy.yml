@@ -18,6 +18,8 @@ jobs:
         run: |
           pip install -r requirements.txt
       - name: Run Unit Tests
+        env:
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
         run: pytest test_main.py
 
   build-and-push-docker:
@@ -52,4 +54,5 @@ jobs:
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
         run: vercel --prod --yes --token ${{ secrets.VERCEL_TOKEN }}
