@@ -3,13 +3,13 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from pydantic import BaseModel
 import httpx
 import os
+import base64
 from pymongo import MongoClient
 import certifi
 from typing import Optional
 
 app = FastAPI()
 
-# Environment Variables
 MONGO_URI = os.getenv("MONGODB_URI")
 OAUTH_CLIENT_ID = os.getenv("OAUTH_CLIENT_ID")
 OAUTH_CLIENT_SECRET = os.getenv("OAUTH_CLIENT_SECRET")
@@ -17,6 +17,7 @@ OAUTH_CLIENT_SECRET = os.getenv("OAUTH_CLIENT_SECRET")
 client = MongoClient(MONGO_URI, tlsCAFile=certifi.where())
 db = client.dsa_tracker
 collection = db.progress
+users_collection = db.users # New collection to securely store OAuth tokens
 
 class ProgressRequest(BaseModel):
     problem_number: int
@@ -67,11 +68,42 @@ def fetch_leetcode_data(problem_number: int):
         pass
     return None
 
+def push_to_github(username: str, token: str, prob_id: int, title: str, topic: str, difficulty: str):
+    """Automates a commit to the user's GitHub repository to maintain their daily streak."""
+    repo_name = "DSA-Tracker-Progress"
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "Accept": "application/vnd.github.v3+json"
+    }
+    
+    # 1. Check if the repo exists, if not, create it automatically
+    check_repo = httpx.get(f"https://api.github.com/repos/{username}/{repo_name}", headers=headers)
+    if check_repo.status_code == 404:
+        httpx.post("https://api.github.com/user/repos", json={
+            "name": repo_name, 
+            "private": False, 
+            "description": "🚀 Auto-generated Daily DSA Progress Tracker"
+        }, headers=headers)
+    
+    # 2. Push the solved problem as a Markdown file
+    path = f"problems/LC_{prob_id}.md"
+    content = f"# {title}\n- **Topic**: {topic}\n- **Difficulty**: {difficulty}\n\n*Logged automatically via DevOps DSA Tracker CI/CD pipeline.*"
+    encoded_content = base64.b64encode(content.encode()).decode()
+    
+    data = {
+        "message": f"Solved {title}",
+        "content": encoded_content
+    }
+    
+    httpx.put(f"https://api.github.com/repos/{username}/{repo_name}/contents/{path}", json=data, headers=headers)
+
+
 # --- OAuth Authentication Routes ---
 
 @app.get("/auth/login")
 def login():
-    return RedirectResponse(f"https://github.com/login/oauth/authorize?client_id={OAUTH_CLIENT_ID}")
+    # Added scope=repo to request commit permissions
+    return RedirectResponse(f"https://github.com/login/oauth/authorize?client_id={OAUTH_CLIENT_ID}&scope=repo")
 
 @app.get("/auth/callback")
 def callback(code: str):
@@ -93,7 +125,13 @@ def callback(code: str):
         user_r = http_client.get("https://api.github.com/user", headers={"Authorization": f"Bearer {access_token}"})
         username = user_r.json().get("login")
 
-    # Set the authenticated user in a cookie and return to the dashboard
+    # Securely store the access token in MongoDB so the backend can commit on their behalf later
+    users_collection.update_one(
+        {"username": username},
+        {"$set": {"access_token": access_token}},
+        upsert=True
+    )
+
     response = RedirectResponse("/")
     response.set_cookie(key="github_user", value=username, httponly=False)
     return response
@@ -151,14 +189,12 @@ def read_root():
     </head>
     <body>
         
-        <!-- Login Screen -->
         <div class="container" id="login-view" style="display: none;">
             <h1>🚀 DSA Tracker</h1>
             <div class="subtitle">Secure your progress with GitHub</div>
             <button class="auth-btn" onclick="window.location.href='/auth/login'">Sign in with GitHub</button>
         </div>
 
-        <!-- Dashboard Screen -->
         <div class="container" id="dashboard-view" style="display: none;">
             <div class="header-bar">
                 <h1 style="margin: 0;">🚀 DSA Tracker</h1>
@@ -233,6 +269,10 @@ def read_root():
                     return;
                 }
 
+                const btn = document.querySelector('.submit-btn');
+                btn.innerText = "Pushing to GitHub...";
+                btn.style.background = "#6b7280";
+                
                 const response = await fetch('/api/progress', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -240,6 +280,9 @@ def read_root():
                 });
                 
                 const data = await response.json();
+                btn.innerText = "Log Progress";
+                btn.style.background = "#3b82f6";
+                
                 if (!response.ok) {
                     alert("Error: " + (data.detail || "Authentication required")); 
                     return;
@@ -258,7 +301,6 @@ def get_progress(github_user: Optional[str] = Cookie(None)):
     if not github_user:
         raise HTTPException(status_code=401, detail="Unauthorized. Please log in.")
     
-    # Only fetch records belonging to the authenticated user
     items = list(collection.find({"username": github_user}, {"_id": 0}))
     return items
 
@@ -267,7 +309,6 @@ def add_progress(req: ProgressRequest, github_user: Optional[str] = Cookie(None)
     if not github_user:
         raise HTTPException(status_code=401, detail="Unauthorized. Please log in.")
 
-    # Check MongoDB for duplicate tied specifically to this user
     if collection.find_one({"username": github_user, "frontend_id": req.problem_number}):
         raise HTTPException(status_code=400, detail=f"LeetCode {req.problem_number} is already marked as solved!")
     
@@ -283,4 +324,17 @@ def add_progress(req: ProgressRequest, github_user: Optional[str] = Cookie(None)
         "difficulty": prob_data["difficulty"]
     }
     collection.insert_one(new_doc)
+
+    # Automatically push the commit to GitHub to maintain the streak
+    user_record = users_collection.find_one({"username": github_user})
+    if user_record and "access_token" in user_record:
+        push_to_github(
+            username=github_user, 
+            token=user_record["access_token"], 
+            prob_id=req.problem_number, 
+            title=prob_data["title"], 
+            topic=prob_data["topic"], 
+            difficulty=prob_data["difficulty"]
+        )
+
     return {"status": "success", "added": prob_data["title"]}
