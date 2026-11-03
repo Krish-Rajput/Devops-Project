@@ -148,119 +148,126 @@ def read_root():
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
         <style>
             :root {
-                --primary-gradient-start: #2477aa;
-                --primary-gradient-end: #6461e0;
-                --hero-ink: #1a3e6f;
-                --body-text: #000000;
-                --canvas: #ffffff;
-                --surface-lavender: #e2eaff;
-                --hairline: #1a3e6f;
-                --hairline-soft: #383838;
+                --primary: #da291c;
+                --primary-active: #b01e0a;
+                --canvas: #181818;
+                --canvas-elevated: #303030;
+                --ink: #ffffff;
+                --body: #969696;
+                --hairline: #303030;
+                --spacing-xs: 16px;
+                --spacing-sm: 24px;
+                --spacing-md: 32px;
+                --spacing-lg: 48px;
+                --spacing-xl: 64px;
+                --spacing-xxl: 96px;
             }
             body {
-                font-family: 'Figtree', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+                font-family: 'Inter', -apple-system, sans-serif;
                 background-color: var(--canvas);
-                color: var(--body-text);
-                margin: 0; padding: 60px 20px; min-height: 100vh;
+                color: var(--body);
+                margin: 0; padding: var(--spacing-xl) var(--spacing-sm); min-height: 100vh;
                 display: flex; justify-content: center; align-items: flex-start;
             }
             
             .container {
-                width: 100%; max-width: 720px;
+                width: 100%; max-width: 800px;
                 background: var(--canvas);
-                /* Flat design: No box-shadows */
             }
 
             /* Typography */
-            h1 { font-size: 49.5px; font-weight: 700; color: var(--hero-ink); margin: 0 0 16px 0; line-height: 1.5; }
-            h2 { font-size: 36px; font-weight: 700; color: var(--hero-ink); margin: 0 0 24px 0; line-height: 1.67; }
-            .subtitle { font-size: 22.5px; font-weight: 500; color: var(--body-text); margin-bottom: 60px; line-height: 1.5; }
+            h1 { font-size: 56px; font-weight: 500; color: var(--ink); margin: 0 0 var(--spacing-xs) 0; line-height: 1.1; letter-spacing: -1.12px; text-transform: uppercase; }
+            h2 { font-size: 36px; font-weight: 500; color: var(--ink); margin: 0 0 var(--spacing-sm) 0; line-height: 1.2; letter-spacing: -0.36px; text-transform: uppercase; }
+            .subtitle { font-size: 18px; font-weight: 400; color: var(--body); margin-bottom: var(--spacing-lg); line-height: 1.5; }
 
             /* Buttons */
             .btn-primary {
-                width: 100%; padding: 14px 18px; height: 60px;
-                background: linear-gradient(90deg, var(--primary-gradient-start), var(--primary-gradient-end)); 
-                color: white;
-                border: none; border-radius: 100px; font-size: 18px; font-weight: 700; line-height: 1.56;
+                width: 100%; padding: 14px 32px; height: 48px;
+                background: var(--primary); color: var(--ink);
+                border: none; border-radius: 0px; 
+                font-size: 14px; font-weight: 700; line-height: 1.0; letter-spacing: 1.4px; text-transform: uppercase;
                 cursor: pointer; font-family: inherit; display: flex; justify-content: center; align-items: center;
-                transition: opacity 0.2s;
+                transition: background 0.2s;
             }
-            .btn-primary:hover { opacity: 0.9; }
+            .btn-primary:hover { background: var(--primary-active); }
             
-            .btn-tertiary {
-                background: transparent; color: var(--hero-ink); border: none; 
-                font-size: 18px; font-weight: 500; line-height: 1.56;
-                cursor: pointer; font-family: inherit; padding: 10px 16px; border-radius: 100px;
+            .btn-outline {
+                background: transparent; color: var(--ink); border: 1px solid var(--ink); 
+                font-size: 13px; font-weight: 600; line-height: 1.4; letter-spacing: 0.65px; text-transform: uppercase;
+                cursor: pointer; font-family: inherit; padding: 12px 24px; border-radius: 0px;
+                transition: background 0.2s;
             }
-            .btn-tertiary:hover { background: var(--surface-lavender); }
+            .btn-outline:hover { background: var(--canvas-elevated); }
 
-            /* Stats */
-            .stats-row { display: flex; gap: 20px; margin-bottom: 40px; }
+            /* Stats / Race Positions */
+            .stats-row { display: flex; gap: var(--spacing-md); margin-bottom: var(--spacing-xl); }
             .stat-box {
-                flex: 1; background: var(--canvas); padding: 40px 32px;
-                border-radius: 20px; border: 1px solid var(--hairline-soft);
-                text-align: center;
+                flex: 1; background: transparent; padding: var(--spacing-sm) 0;
+                border: none; text-align: left;
             }
-            .stat-value { font-size: 31.5px; font-weight: 700; color: var(--hero-ink); margin-bottom: 12px; }
-            .stat-label { font-size: 18px; color: var(--body-text); font-weight: 400; }
+            .stat-value { font-size: 80px; font-weight: 700; color: var(--primary); margin-bottom: 8px; line-height: 1.0; letter-spacing: -1.6px; }
+            .stat-label { font-size: 11px; color: var(--ink); font-weight: 600; letter-spacing: 1.1px; text-transform: uppercase; }
 
             /* Forms */
-            .form-row { margin-bottom: 24px; }
+            .form-row { margin-bottom: var(--spacing-sm); }
             input {
-                width: 100%; padding: 12px 16px; box-sizing: border-box;
+                width: 100%; padding: 14px 16px; box-sizing: border-box;
                 background: var(--canvas); border: 1px solid var(--hairline);
-                border-radius: 10px; color: var(--hero-ink); font-size: 18px; font-family: inherit; font-weight: 400;
+                border-radius: 4px; color: var(--ink); font-size: 14px; font-family: inherit; font-weight: 400;
                 height: 48px;
             }
-            input::placeholder { color: var(--hairline-soft); }
-            input:focus { outline: none; border-width: 2px; }
+            input::placeholder { color: var(--body); }
+            input:focus { outline: none; border-color: var(--ink); }
 
             /* Lists */
-            .progress-list { margin-top: 40px; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 16px;}
+            .progress-list { margin-top: var(--spacing-lg); padding: 0; list-style: none; display: flex; flex-direction: column; gap: var(--spacing-xs);}
             .progress-item {
-                background: var(--surface-lavender); padding: 32px 40px;
-                border-radius: 20px; display: flex; justify-content: space-between; align-items: center;
+                background: var(--canvas-elevated); padding: var(--spacing-sm);
+                border-radius: 0px; display: flex; justify-content: space-between; align-items: center;
             }
-            .item-info { display: flex; flex-direction: column; gap: 8px; }
-            .problem-name { font-weight: 700; color: var(--hero-ink); font-size: 22.5px; }
-            .topic-tag { font-size: 16px; color: var(--body-text); font-weight: 400;}
+            .item-info { display: flex; flex-direction: column; gap: 4px; }
+            .problem-name { font-weight: 700; color: var(--ink); font-size: 18px; line-height: 1.2; }
+            .topic-tag { font-size: 14px; color: var(--body); font-weight: 400;}
             
-            .badge { font-size: 13.5px; font-weight: 700; color: var(--hero-ink); text-transform: capitalize;}
+            .badge-pill { 
+                font-size: 11px; font-weight: 600; color: var(--ink); text-transform: uppercase; letter-spacing: 1.1px;
+                background: var(--canvas); padding: 4px 12px; border-radius: 9999px;
+            }
 
             /* Leaderboard */
             #leaderboard-section { 
                 display: none; background: var(--canvas); 
-                border: 1px solid var(--hairline-soft);
-                padding: 40px 44px; border-radius: 20px; margin-bottom: 60px; 
+                border: 1px solid var(--hairline);
+                padding: var(--spacing-xl) var(--spacing-lg); border-radius: 0px; margin-bottom: var(--spacing-xxl); 
             }
-            #leaderboard-section h2 { text-align: center; margin-bottom: 32px; }
+            #leaderboard-section h2 { text-align: left; margin-bottom: var(--spacing-md); }
             #leaderboard-section .progress-item { 
-                background: var(--canvas); border: 1px solid var(--hairline-soft); 
-                padding: 24px; border-radius: 20px;
+                background: var(--canvas-elevated); border: none; 
+                padding: var(--spacing-sm); border-radius: 0px;
             }
 
-            .header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
+            .header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-xl); }
         </style>
     </head>
     <body>
         
-        <div class="container" id="login-view" style="display: none; text-align: center; margin-top: 10vh;">
-            <h1>Tracker your progress. Build your streak.</h1>
+        <div class="container" id="login-view" style="display: none; text-align: left; margin-top: 15vh;">
+            <h1>Scuderia Tracker</h1>
             <div class="subtitle">Secure CI/CD Portfolio Project</div>
             <button class="btn-primary" onclick="window.location.href='/auth/login'">
-                Connect GitHub to Continue
+                Connect GitHub
             </button>
         </div>
 
         <div class="container" id="dashboard-view" style="display: none;">
             <div class="header-bar">
-                <h1 style="margin: 0; font-size: 36px;">Tracker</h1>
-                <div style="display: flex; gap: 8px;">
-                    <button class="btn-tertiary" onclick="toggleLeaderboard()">Leaderboard</button>
-                    <button class="btn-tertiary" onclick="window.location.href='/auth/logout'">Sign out <span id="username-display"></span></button>
+                <h1 style="margin: 0; font-size: 36px; letter-spacing: -0.36px;">DSA Tracker</h1>
+                <div style="display: flex; gap: 16px;">
+                    <button class="btn-outline" onclick="toggleLeaderboard()">Leaderboard</button>
+                    <button class="btn-outline" onclick="window.location.href='/auth/logout'">Sign out <span id="username-display" style="text-transform: none; letter-spacing: 0;"></span></button>
                 </div>
             </div>
             
@@ -317,10 +324,10 @@ def read_root():
                         
                         data.forEach((user, index) => {
                             list.innerHTML += `
-                            <li class="progress-item" style="justify-content: flex-start; gap: 24px;">
-                                <div style="font-size: 22.5px; font-weight: 700; color: var(--hero-ink); width: 30px;">${index + 1}</div>
+                            <li class="progress-item" style="justify-content: flex-start; gap: 32px;">
+                                <div style="font-size: 80px; font-weight: 700; color: var(--primary); width: 60px; line-height: 1.0; letter-spacing: -1.6px;">${index + 1}</div>
                                 <div class="problem-name">${user.username}</div>
-                                <div class="badge" style="margin-left: auto;">${user.solved} solved</div>
+                                <div class="badge-pill" style="margin-left: auto; background: var(--canvas);">${user.solved} solved</div>
                             </li>`;
                         });
                     }
@@ -348,7 +355,7 @@ def read_root():
                             <span class="problem-name">${item.problem}</span>
                             <span class="topic-tag">${item.topic}</span>
                         </div>
-                        <span class="badge">${item.difficulty}</span>
+                        <span class="badge-pill">${item.difficulty}</span>
                     </li>`;
                 });
             }
