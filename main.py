@@ -148,160 +148,125 @@ def read_root():
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;700&display=swap" rel="stylesheet">
         <style>
             :root {
-                --primary: #533afd;
-                --primary-press: #2e2b8c;
-                --brand-dark-900: #1c1e54;
-                --ink: #0d253d;
-                --ink-mute: #64748d;
+                --primary-gradient-start: #2477aa;
+                --primary-gradient-end: #6461e0;
+                --hero-ink: #1a3e6f;
+                --body-text: #000000;
                 --canvas: #ffffff;
-                --canvas-soft: #f6f9fc;
-                --canvas-cream: #f5e9d4;
-                --hairline: #e3e8ee;
-                --hairline-input: #a8c3de;
-                --shadow-1: 0 1px 3px rgba(0,55,112,0.08);
-                --shadow-2: 0 8px 24px rgba(0,55,112,0.08), 0 2px 6px rgba(0,55,112,0.04);
+                --surface-lavender: #e2eaff;
+                --hairline: #1a3e6f;
+                --hairline-soft: #383838;
             }
             body {
-                font-family: 'Inter', system-ui, -apple-system, sans-serif;
-                font-weight: 300;
-                font-feature-settings: "ss01";
-                color: var(--ink);
-                background-color: var(--canvas-soft);
-                margin: 0; padding: 20px; min-height: 100vh;
+                font-family: 'Figtree', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+                background-color: var(--canvas);
+                color: var(--body-text);
+                margin: 0; padding: 60px 20px; min-height: 100vh;
                 display: flex; justify-content: center; align-items: flex-start;
-                position: relative;
-                overflow-x: hidden;
             }
-            /* Gradient Mesh Backdrop */
-            .mesh-bg {
-                position: absolute;
-                top: 0; left: 0; width: 100%; height: 50vh;
-                background: 
-                    radial-gradient(circle at 15% 50%, #f5e9d4 0%, transparent 40%),
-                    radial-gradient(circle at 85% 30%, #ea2261 0%, transparent 45%),
-                    radial-gradient(circle at 50% 20%, #533afd 0%, transparent 50%),
-                    radial-gradient(circle at 30% 80%, #9b6829 0%, transparent 45%),
-                    radial-gradient(circle at 70% 60%, #e6e6fa 0%, transparent 50%);
-                filter: blur(80px);
-                z-index: -1;
-                opacity: 0.8;
-                pointer-events: none;
-            }
-
-            .container {
-                background: var(--canvas);
-                border: 1px solid var(--hairline);
-                padding: 32px; border-radius: 12px;
-                box-shadow: var(--shadow-2);
-                width: 100%; max-width: 600px; margin-top: 8vh;
-                z-index: 1;
-            }
-
-            h1 { font-size: 32px; font-weight: 300; letter-spacing: -0.64px; color: var(--ink); margin: 0 0 5px 0; }
-            h2 { font-size: 22px; font-weight: 300; letter-spacing: -0.22px; margin: 0 0 16px 0; }
-            .subtitle { color: var(--ink-mute); font-size: 15px; margin-bottom: 32px; }
-
-            /* Tabular Figures for Stats */
-            .stats-row { display: flex; gap: 16px; margin-bottom: 24px; }
-            .stat-box {
-                flex: 1; background: var(--canvas); padding: 16px;
-                border-radius: 8px; border: 1px solid var(--hairline);
-                box-shadow: var(--shadow-1);
-            }
-            .stat-value { 
-                font-size: 32px; font-weight: 300; color: var(--ink); 
-                font-feature-settings: "tnum"; letter-spacing: -0.42px; margin-bottom: 4px;
-            }
-            .stat-label { font-size: 13px; color: var(--ink-mute); font-feature-settings: "tnum"; letter-spacing: -0.39px; }
-
-            /* Inputs & Buttons */
-            .form-row { margin-bottom: 16px; }
-            input {
-                width: 100%; padding: 8px 12px; box-sizing: border-box;
-                background: var(--canvas); border: 1px solid var(--hairline-input);
-                border-radius: 6px; color: var(--ink); font-size: 15px; font-family: inherit;
-                font-weight: 300; font-feature-settings: "ss01";
-            }
-            input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 2px #b9b9f9; }
-
-            .btn-primary-pill {
-                width: 100%; padding: 8px 16px;
-                background: var(--primary); color: white;
-                border: none; border-radius: 9999px; font-size: 16px; font-weight: 400;
-                cursor: pointer; transition: background 0.2s ease;
-                font-family: inherit; display: flex; justify-content: center; align-items: center; gap: 8px;
-            }
-            .btn-primary-pill:hover { background: var(--primary-press); }
             
-            .btn-dark-pill {
-                background: var(--brand-dark-900); color: white;
-                border: none; border-radius: 9999px; font-size: 14px; font-weight: 400;
-                cursor: pointer; padding: 8px 16px; font-family: inherit; transition: opacity 0.2s;
+            .container {
+                width: 100%; max-width: 720px;
+                background: var(--canvas);
+                /* Flat design: No box-shadows */
             }
-            .btn-dark-pill:hover { opacity: 0.9; }
 
-            .btn-outline-pill {
-                background: var(--canvas); color: var(--primary);
-                border: 1px solid var(--primary); border-radius: 9999px; font-size: 14px; font-weight: 400;
-                cursor: pointer; padding: 8px 16px; font-family: inherit; transition: background 0.2s;
+            /* Typography */
+            h1 { font-size: 49.5px; font-weight: 700; color: var(--hero-ink); margin: 0 0 16px 0; line-height: 1.5; }
+            h2 { font-size: 36px; font-weight: 700; color: var(--hero-ink); margin: 0 0 24px 0; line-height: 1.67; }
+            .subtitle { font-size: 22.5px; font-weight: 500; color: var(--body-text); margin-bottom: 60px; line-height: 1.5; }
+
+            /* Buttons */
+            .btn-primary {
+                width: 100%; padding: 14px 18px; height: 60px;
+                background: linear-gradient(90deg, var(--primary-gradient-start), var(--primary-gradient-end)); 
+                color: white;
+                border: none; border-radius: 100px; font-size: 18px; font-weight: 700; line-height: 1.56;
+                cursor: pointer; font-family: inherit; display: flex; justify-content: center; align-items: center;
+                transition: opacity 0.2s;
             }
-            .btn-outline-pill:hover { background: var(--canvas-soft); }
+            .btn-primary:hover { opacity: 0.9; }
+            
+            .btn-tertiary {
+                background: transparent; color: var(--hero-ink); border: none; 
+                font-size: 18px; font-weight: 500; line-height: 1.56;
+                cursor: pointer; font-family: inherit; padding: 10px 16px; border-radius: 100px;
+            }
+            .btn-tertiary:hover { background: var(--surface-lavender); }
 
-            /* Lists & Badges */
-            .progress-list { margin-top: 24px; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px;}
+            /* Stats */
+            .stats-row { display: flex; gap: 20px; margin-bottom: 40px; }
+            .stat-box {
+                flex: 1; background: var(--canvas); padding: 40px 32px;
+                border-radius: 20px; border: 1px solid var(--hairline-soft);
+                text-align: center;
+            }
+            .stat-value { font-size: 31.5px; font-weight: 700; color: var(--hero-ink); margin-bottom: 12px; }
+            .stat-label { font-size: 18px; color: var(--body-text); font-weight: 400; }
+
+            /* Forms */
+            .form-row { margin-bottom: 24px; }
+            input {
+                width: 100%; padding: 12px 16px; box-sizing: border-box;
+                background: var(--canvas); border: 1px solid var(--hairline);
+                border-radius: 10px; color: var(--hero-ink); font-size: 18px; font-family: inherit; font-weight: 400;
+                height: 48px;
+            }
+            input::placeholder { color: var(--hairline-soft); }
+            input:focus { outline: none; border-width: 2px; }
+
+            /* Lists */
+            .progress-list { margin-top: 40px; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 16px;}
             .progress-item {
-                background: var(--canvas); padding: 12px 16px;
-                border: 1px solid var(--hairline); border-radius: 8px;
-                display: flex; justify-content: space-between; align-items: center;
+                background: var(--surface-lavender); padding: 32px 40px;
+                border-radius: 20px; display: flex; justify-content: space-between; align-items: center;
             }
-            .item-info { display: flex; flex-direction: column; gap: 2px; }
-            .problem-name { font-weight: 400; color: var(--ink); font-size: 15px; }
-            .topic-tag { font-size: 13px; color: var(--ink-mute); font-feature-settings: "tnum"; letter-spacing: -0.39px;}
+            .item-info { display: flex; flex-direction: column; gap: 8px; }
+            .problem-name { font-weight: 700; color: var(--hero-ink); font-size: 22.5px; }
+            .topic-tag { font-size: 16px; color: var(--body-text); font-weight: 400;}
+            
+            .badge { font-size: 13.5px; font-weight: 700; color: var(--hero-ink); text-transform: capitalize;}
 
-            .pill-tag-soft {
-                padding: 4px 8px; border-radius: 9999px; font-size: 11px; font-weight: 400;
-                background: #b9b9f9; color: #4434d4; text-transform: uppercase; letter-spacing: 0.1px;
-            }
-
-            /* Featured Tier Leaderboard */
+            /* Leaderboard */
             #leaderboard-section { 
-                display: none; background: var(--brand-dark-900); color: white; 
-                padding: 32px; border-radius: 12px; margin-bottom: 24px; 
+                display: none; background: var(--canvas); 
+                border: 1px solid var(--hairline-soft);
+                padding: 40px 44px; border-radius: 20px; margin-bottom: 60px; 
             }
-            #leaderboard-section .progress-item {
-                background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white;
+            #leaderboard-section h2 { text-align: center; margin-bottom: 32px; }
+            #leaderboard-section .progress-item { 
+                background: var(--canvas); border: 1px solid var(--hairline-soft); 
+                padding: 24px; border-radius: 20px;
             }
-            #leaderboard-section .problem-name { color: white; }
 
-            .header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+            .header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
         </style>
     </head>
     <body>
-        <div class="mesh-bg"></div>
         
-        <div class="container" id="login-view" style="display: none;">
-            <h1>DSA Tracker</h1>
+        <div class="container" id="login-view" style="display: none; text-align: center; margin-top: 10vh;">
+            <h1>Tracker your progress. Build your streak.</h1>
             <div class="subtitle">Secure CI/CD Portfolio Project</div>
-            <button class="btn-primary-pill" onclick="window.location.href='/auth/login'">
-                Connect GitHub
+            <button class="btn-primary" onclick="window.location.href='/auth/login'">
+                Connect GitHub to Continue
             </button>
         </div>
 
         <div class="container" id="dashboard-view" style="display: none;">
             <div class="header-bar">
-                <h1 style="margin: 0;">DSA Tracker</h1>
+                <h1 style="margin: 0; font-size: 36px;">Tracker</h1>
                 <div style="display: flex; gap: 8px;">
-                    <button class="btn-dark-pill" onclick="toggleLeaderboard()">Leaderboard</button>
-                    <button class="btn-outline-pill" onclick="window.location.href='/auth/logout'">Logout <span id="username-display"></span></button>
+                    <button class="btn-tertiary" onclick="toggleLeaderboard()">Leaderboard</button>
+                    <button class="btn-tertiary" onclick="window.location.href='/auth/logout'">Sign out <span id="username-display"></span></button>
                 </div>
             </div>
             
             <div id="leaderboard-section">
                 <h2>Room 101 Leaderboard</h2>
-                <ul class="progress-list" id="leaderboard-list"></ul>
+                <ul class="progress-list" id="leaderboard-list" style="margin-top: 0;"></ul>
             </div>
 
             <div class="stats-row">
@@ -314,7 +279,7 @@ def read_root():
             <div class="form-row">
                 <input type="number" id="problem" placeholder="Enter LeetCode Problem Number (e.g., 462)" min="1">
             </div>
-            <button class="btn-primary-pill" id="submit-btn" onclick="addProgress()">
+            <button class="btn-primary" id="submit-btn" onclick="addProgress()">
                 <span id="btn-text">Push to GitHub Streak</span>
             </button>
             
@@ -352,11 +317,10 @@ def read_root():
                         
                         data.forEach((user, index) => {
                             list.innerHTML += `
-                            <li class="progress-item">
-                                <div class="item-info">
-                                    <span class="problem-name" style="font-size: 16px;">${index + 1}. ${user.username}</span>
-                                </div>
-                                <span class="pill-tag-soft" style="background: rgba(255,255,255,0.1); color: white;">${user.solved} solved</span>
+                            <li class="progress-item" style="justify-content: flex-start; gap: 24px;">
+                                <div style="font-size: 22.5px; font-weight: 700; color: var(--hero-ink); width: 30px;">${index + 1}</div>
+                                <div class="problem-name">${user.username}</div>
+                                <div class="badge" style="margin-left: auto;">${user.solved} solved</div>
                             </li>`;
                         });
                     }
@@ -384,7 +348,7 @@ def read_root():
                             <span class="problem-name">${item.problem}</span>
                             <span class="topic-tag">${item.topic}</span>
                         </div>
-                        <span class="pill-tag-soft">${item.difficulty}</span>
+                        <span class="badge">${item.difficulty}</span>
                     </li>`;
                 });
             }
@@ -399,7 +363,7 @@ def read_root():
                 const btn = document.getElementById('submit-btn');
                 const btnText = document.getElementById('btn-text');
                 
-                btn.style.background = "var(--primary-press)";
+                btn.style.opacity = "0.7";
                 btn.style.pointerEvents = "none";
                 btnText.innerText = "Processing...";
                 
@@ -411,7 +375,7 @@ def read_root():
                 
                 const data = await response.json();
                 
-                btn.style.background = "var(--primary)";
+                btn.style.opacity = "1";
                 btn.style.pointerEvents = "auto";
                 btnText.innerText = "Push to GitHub Streak";
                 
