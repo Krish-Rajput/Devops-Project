@@ -7,7 +7,6 @@ import base64
 from pymongo import MongoClient
 import certifi
 from typing import Optional
-import math
 
 app = FastAPI()
 
@@ -145,262 +144,260 @@ def read_root():
     <!DOCTYPE html>
     <html lang="en">
     <head>
-        <title>DSA Progress Tracker</title>
+        <title>Scuderia Tracker | Ferrari Design System</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
         <style>
             :root {
-                --brand-green: #1ed760;
-                --brand-green-press: #1db954;
-                --bg-base: #121212;
-                --surface-dark: #181818;
-                --surface-mid: #1f1f1f;
-                --surface-card: #252525;
-                --text-base: #ffffff;
-                --text-secondary: #b3b3b3;
-                --border-gray: #4d4d4d;
-                
-                --lc-easy: #00b8a3;
-                --lc-med: #ffc01e;
-                --lc-hard: #ff375f;
-                --lc-track: #2c2c2c;
+                --primary: #da291c;
+                --primary-active: #b01e0a;
+                --canvas: #181818;
+                --canvas-elevated: #303030;
+                --ink: #ffffff;
+                --body: #969696;
+                --hairline: #303030;
+                --spacing-xs: 16px;
+                --spacing-sm: 24px;
+                --spacing-md: 32px;
+                --spacing-lg: 48px;
+                --spacing-xl: 64px;
+                --spacing-xxl: 96px;
+                --spacing-super: 128px;
             }
             body {
-                font-family: "Inter", sans-serif;
-                background-color: var(--bg-base);
-                color: var(--text-base);
+                font-family: 'Inter', -apple-system, sans-serif;
+                background-color: var(--canvas);
+                color: var(--body);
                 margin: 0; padding: 0; min-height: 100vh;
-                display: flex;
+                display: flex; flex-direction: column;
+            }
+            
+            /* Top Navigation Bar */
+            .top-nav {
+                height: 64px; background-color: var(--canvas); border-bottom: 1px solid var(--hairline);
+                display: flex; align-items: center; justify-content: space-between; padding: 0 var(--spacing-lg);
+                position: sticky; top: 0; z-index: 100; box-sizing: border-box; width: 100%;
+            }
+            .nav-brand { font-size: 14px; font-weight: 700; color: var(--ink); text-transform: uppercase; letter-spacing: 1.4px; }
+            .nav-links { display: flex; gap: var(--spacing-sm); align-items: center; }
+            .nav-link {
+                background: transparent; color: var(--body); border: none; font-family: inherit;
+                font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.65px;
+                cursor: pointer; text-decoration: none; padding: 8px 12px; transition: color 0.2s;
+            }
+            .nav-link:hover { color: var(--ink); }
+
+            /* Cinematic Hero Band */
+            .hero-band-cinema {
+                width: 100%; box-sizing: border-box;
+                background: linear-gradient(to bottom, rgba(24,24,24,0.3), rgba(24,24,24,1)), url('https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?q=80&w=2560&auto=format&fit=crop') center/cover;
+                padding: var(--spacing-super) var(--spacing-lg) var(--spacing-xxl);
+                border-bottom: 1px solid var(--hairline);
+            }
+            .hero-header {
+                max-width: 1280px; margin: 0 auto;
+                display: flex; justify-content: space-between; align-items: flex-end;
             }
 
-            /* Spotify Layout Sidebar */
-            .sidebar {
-                width: 240px; background-color: var(--bg-base);
-                display: flex; flex-direction: column; padding: 24px 12px;
-                position: fixed; height: 100vh; box-sizing: border-box;
+            /* Dashboard Layout */
+            .dashboard-layout {
+                max-width: 1280px; margin: 0 auto; width: 100%; box-sizing: border-box;
+                padding: var(--spacing-xl) var(--spacing-lg) var(--spacing-super);
+                display: grid; grid-template-columns: 2fr 1fr; gap: var(--spacing-xl);
+                flex: 1;
             }
-            .sidebar-logo {
-                font-size: 24px; font-weight: 700; color: var(--text-base);
-                padding: 0 12px; margin-bottom: 32px; display: flex; align-items: center; gap: 8px;
+            @media (max-width: 1024px) {
+                .dashboard-layout { grid-template-columns: 1fr; }
+                .hero-header { flex-direction: column; align-items: flex-start; gap: var(--spacing-md); }
             }
-            .sidebar-nav-item {
-                font-size: 14px; font-weight: 700; color: var(--text-secondary);
-                padding: 12px; cursor: pointer; border-radius: 4px; transition: color 0.2s;
-                text-decoration: none; display: flex; align-items: center;
-            }
-            .sidebar-nav-item:hover, .sidebar-nav-item.active { color: var(--text-base); }
 
-            /* Main Content Area */
-            .main-content {
-                margin-left: 240px; flex: 1; display: flex; flex-direction: column;
-                background: linear-gradient(180deg, #2b2b2b 0%, var(--bg-base) 100%);
-                background-size: 100% 300px; background-repeat: no-repeat;
-                min-height: 100vh;
-            }
-            .top-bar {
-                height: 64px; padding: 0 24px; display: flex; justify-content: flex-end; align-items: center;
-                position: sticky; top: 0; z-index: 10; background: rgba(18,18,18,0.7); backdrop-filter: blur(8px);
-            }
-            .user-pill {
-                background-color: var(--surface-dark); color: var(--text-base);
-                border-radius: 500px; padding: 4px 16px 4px 4px; font-size: 14px; font-weight: 700;
-                display: flex; align-items: center; gap: 8px; cursor: pointer;
-            }
-            .user-avatar { width: 28px; height: 28px; border-radius: 50%; background-color: var(--surface-card); display: flex; align-items: center; justify-content: center; }
-
-            .content-wrapper { padding: 24px; max-width: 1200px; width: 100%; box-sizing: border-box; }
-
-            /* Spotify Typography */
-            h1 { font-size: 32px; font-weight: 700; margin: 0 0 24px 0; letter-spacing: -0.5px; }
-            h2 { font-size: 24px; font-weight: 700; margin: 0 0 16px 0; letter-spacing: -0.5px; }
-            .section-title { margin-top: 32px; margin-bottom: 16px; }
+            /* Typography */
+            h1 { font-size: 56px; font-weight: 500; color: var(--ink); margin: 0; line-height: 1.1; letter-spacing: -1.12px; text-transform: uppercase; }
+            h2 { font-size: 26px; font-weight: 500; color: var(--ink); margin: 0 0 var(--spacing-sm) 0; line-height: 1.5; letter-spacing: 0.195px; text-transform: uppercase; }
+            .subtitle { font-size: 18px; font-weight: 400; color: var(--body); margin-top: 8px; line-height: 1.5; }
 
             /* Buttons */
-            .button-primary-green {
-                background-color: var(--brand-green); color: #000000;
-                border: none; border-radius: 500px; 
-                font-size: 14px; font-weight: 700; line-height: 1; letter-spacing: 1.4px; text-transform: uppercase;
-                padding: 14px 32px; cursor: pointer; font-family: inherit;
-                display: inline-flex; justify-content: center; align-items: center; transition: transform 0.1s, background 0.2s;
-            }
-            .button-primary-green:hover { background-color: #1fdf64; transform: scale(1.04); }
-            .button-primary-green:active { background-color: var(--brand-green-press); transform: scale(1); }
-
-            .button-outlined-pill {
-                background: transparent; color: var(--text-base); border: 1px solid var(--border-gray); 
-                font-size: 12px; font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase;
-                padding: 8px 16px; border-radius: 500px; cursor: pointer; transition: border 0.2s;
-            }
-            .button-outlined-pill:hover { border-color: var(--text-base); }
-
-            /* Cards & Inputs */
-            .card {
-                background-color: var(--surface-dark); border-radius: 8px; padding: 16px;
+            .button-primary {
+                width: 100%; padding: 14px 32px; height: 48px;
+                background: var(--primary); color: var(--ink);
+                border: none; border-radius: 0px; 
+                font-size: 14px; font-weight: 700; line-height: 1.0; letter-spacing: 1.4px; text-transform: uppercase;
+                cursor: pointer; font-family: inherit; display: flex; justify-content: center; align-items: center;
                 transition: background 0.2s;
             }
-            .card:hover { background-color: var(--surface-card); }
+            .button-primary:hover { background: var(--primary-active); }
             
-            .text-input-pill {
-                width: 100%; padding: 14px 20px; box-sizing: border-box;
-                background-color: var(--surface-mid); border: 1px solid transparent;
-                border-radius: 500px; color: var(--text-base); font-size: 14px; font-family: inherit;
-                box-shadow: inset 0 0 0 1px transparent; transition: box-shadow 0.2s;
+            .button-outline {
+                background: transparent; color: var(--ink); border: 1px solid var(--ink); 
+                font-size: 13px; font-weight: 600; line-height: 1.4; letter-spacing: 0.65px; text-transform: uppercase;
+                cursor: pointer; font-family: inherit; padding: 12px 24px; border-radius: 0px;
+                transition: background 0.2s;
             }
-            .text-input-pill::placeholder { color: var(--text-secondary); }
-            .text-input-pill:focus { outline: none; box-shadow: inset 0 0 0 1px var(--text-secondary); }
+            .button-outline:hover { background: var(--canvas-elevated); }
 
-            /* LeetCode Telemetry UI - 3 Concentric Rings */
-            .lc-dashboard {
-                display: flex; gap: 32px; background-color: var(--surface-dark);
-                border-radius: 8px; padding: 24px; align-items: center; flex-wrap: wrap;
-            }
-            .lc-ring-container { position: relative; width: 180px; height: 180px; }
-            .lc-ring-svg { transform: rotate(-90deg); width: 100%; height: 100%; }
-            .lc-ring-center {
-                position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-                display: flex; flex-direction: column; justify-content: center; align-items: center;
-            }
-            .lc-number-large { font-size: 32px; font-weight: 700; color: var(--text-base); line-height: 1; }
-            .lc-number-small { font-size: 14px; font-weight: 600; color: var(--text-secondary); }
+            /* Telemetry Dash */
+            .telemetry-board { display: flex; gap: var(--spacing-md); margin-bottom: var(--spacing-lg); }
+            .spec-cell { flex: 1; }
+            .stat-value { font-size: 80px; font-weight: 700; color: var(--primary); margin-bottom: 4px; line-height: 1.0; letter-spacing: -1.6px; }
+            .stat-label { font-size: 11px; color: var(--ink); font-weight: 600; letter-spacing: 1.1px; text-transform: uppercase; }
             
-            .lc-stats-bars { display: flex; flex-direction: column; gap: 12px; flex: 1; min-width: 200px; }
-            .lc-stat-block {
-                background-color: var(--surface-mid); border-radius: 8px; padding: 12px 16px;
+            .progress-bar-container { width: 100%; height: 4px; background: var(--canvas-elevated); margin-top: 12px; }
+            .progress-bar { height: 100%; background: var(--ink); transition: width 0.5s ease; }
+            .progress-bar.hard { background: var(--primary); }
+            .progress-bar.medium { background: var(--body); }
+
+            /* Forms */
+            .form-row { margin-bottom: var(--spacing-sm); }
+            input {
+                width: 100%; padding: 14px 16px; box-sizing: border-box;
+                background: var(--canvas-elevated); border: 1px solid var(--hairline);
+                border-radius: 0px; color: var(--ink); font-size: 14px; font-family: inherit; font-weight: 400;
+                height: 48px;
+            }
+            input::placeholder { color: var(--body); }
+            input:focus { outline: none; border-color: var(--ink); }
+
+            /* Lists & Feed */
+            .progress-list { padding: 0; list-style: none; display: flex; flex-direction: column; gap: var(--spacing-xs); margin: 0;}
+            .progress-item {
+                background: transparent; padding: var(--spacing-sm) 0;
+                border-bottom: 1px solid var(--hairline); border-radius: 0px; 
                 display: flex; justify-content: space-between; align-items: center;
             }
-            .lc-stat-label { font-size: 14px; font-weight: 600; }
-            .lc-stat-value { font-size: 16px; font-weight: 700; color: var(--text-base); }
-
-            /* Track Rows */
-            .track-row {
-                display: flex; align-items: center; padding: 8px 16px; border-radius: 4px;
-                transition: background 0.2s;
-            }
-            .track-row:hover { background-color: var(--surface-card); }
-            .track-col-index { width: 32px; color: var(--text-secondary); font-size: 14px; }
-            .track-col-main { flex: 1; display: flex; flex-direction: column; }
-            .track-title { font-size: 16px; font-weight: 600; color: var(--text-base); margin-bottom: 4px; }
-            .track-subtitle { font-size: 14px; font-weight: 400; color: var(--text-secondary); }
+            .item-info { display: flex; flex-direction: column; gap: 4px; }
+            .problem-name { font-weight: 700; color: var(--ink); font-size: 18px; line-height: 1.2; }
+            .topic-tag { font-size: 13px; color: var(--body); font-weight: 400;}
+            .feed-user { color: var(--primary); font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: 0.65px;}
             
-            .badge {
-                font-size: 10.5px; font-weight: 700; text-transform: uppercase;
-                background-color: var(--surface-mid); color: var(--text-base);
-                padding: 4px 8px; border-radius: 500px; letter-spacing: 1px;
+            .badge-pill { 
+                font-size: 11px; font-weight: 600; color: var(--ink); text-transform: uppercase; letter-spacing: 1.1px;
+                background: var(--canvas-elevated); padding: 4px 12px; border-radius: 9999px;
             }
+
+            /* Architecture Footer */
+            .footer-dark {
+                background: var(--canvas); border-top: 1px solid var(--hairline);
+                padding: var(--spacing-xl) var(--spacing-lg); width: 100%; box-sizing: border-box;
+            }
+            .footer-grid {
+                max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--spacing-lg);
+            }
+            .footer-col h4 { color: var(--ink); font-size: 11px; text-transform: uppercase; letter-spacing: 1.1px; margin: 0 0 var(--spacing-sm) 0; }
+            .footer-col p { color: var(--body); font-size: 13px; margin: 0 0 8px 0; }
         </style>
     </head>
     <body>
-
-        <!-- Sidebar -->
-        <div class="sidebar">
-            <div class="sidebar-logo">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="var(--brand-green)"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm4.586 14.424c-.18.295-.563.387-.857.207-2.35-1.434-5.305-1.76-8.786-.963-.335.077-.67-.133-.746-.467-.077-.334.132-.67.467-.746 3.805-.873 7.077-.496 9.715 1.115.293.18.386.563.207.854zm1.226-2.735c-.226.368-.7.485-1.07.258-2.686-1.65-6.786-2.13-9.967-1.166-.413.125-.845-.108-.97-.52-.126-.413.107-.845.52-.97 3.65-1.106 8.19-.57 11.23 1.298.37.226.486.7.257 1.07zm.106-2.83c-3.228-1.916-8.544-2.093-11.616-1.16-.498.15-1.018-.13-1.168-.627-.15-.497.13-1.018.628-1.168 3.53-1.07 9.41-.87 13.13 1.344.444.264.59.84.327 1.285-.264.443-.84.59-1.286.326z"/></svg>
-                DSA Tracker
+        
+        <!-- Top Navigation -->
+        <nav class="top-nav">
+            <div class="nav-brand">SCUDERIA TRACKER</div>
+            <div class="nav-links">
+                <a href="/" class="nav-link">Telemetry</a>
+                <a href="/leaderboard" class="nav-link" style="color: var(--primary);">Leaderboard</a>
             </div>
-            <a class="sidebar-nav-item active">Home</a>
-            <a class="sidebar-nav-item">Search</a>
-            <a class="sidebar-nav-item">Your Library</a>
+        </nav>
+
+        <!-- Login Screen -->
+        <div id="login-view" style="display: none;">
+            <div class="hero-band-cinema" style="min-height: calc(100vh - 64px); display: flex; flex-direction: column; justify-content: flex-end;">
+                <div class="hero-header" style="flex-direction: column; align-items: flex-start;">
+                    <div>
+                        <h1>Scuderia Tracker</h1>
+                        <div class="subtitle">Secure CI/CD Portfolio Project</div>
+                    </div>
+                    <button class="button-primary" style="max-width: 300px; margin-top: var(--spacing-md);" onclick="window.location.href='/auth/login'">
+                        Connect GitHub
+                    </button>
+                </div>
+            </div>
         </div>
 
-        <!-- Main View -->
-        <div class="main-content">
+        <!-- Dashboard Screen -->
+        <div id="dashboard-view" style="display: none; width: 100%;">
             
-            <div class="top-bar">
-                <div id="auth-container">
-                    <!-- Dynamic Auth UI -->
+            <div class="hero-band-cinema">
+                <div class="hero-header">
+                    <div>
+                        <h1>DSA Progress Tracker</h1>
+                        <div class="subtitle">Engineering precision. Automated streaks.</div>
+                    </div>
+                    <button class="button-outline" onclick="window.location.href='/auth/logout'">Sign out <span id="username-display" style="text-transform: none; letter-spacing: 0;"></span></button>
                 </div>
             </div>
 
-            <!-- Login View -->
-            <div id="login-view" class="content-wrapper" style="display: none; align-items: center; justify-content: center; min-height: 70vh;">
-                <div style="text-align: center; max-width: 400px;">
-                    <h1 style="font-size: 48px; margin-bottom: 16px;">Log your progress.</h1>
-                    <p style="color: var(--text-secondary); margin-bottom: 32px; font-size: 16px;">Automated CI/CD commits directly to your GitHub streak.</p>
-                    <button class="button-primary-green" onclick="window.location.href='/auth/login'">Connect GitHub</button>
-                </div>
-            </div>
-
-            <!-- Dashboard View -->
-            <div id="dashboard-view" class="content-wrapper" style="display: none;">
-                <h1 id="greeting-title">Good evening</h1>
-
-                <!-- LeetCode Exact Progress Replica (3 Concentric Rings) -->
-                <div class="lc-dashboard" style="margin-bottom: 32px;">
-                    <div class="lc-ring-container">
-                        <svg class="lc-ring-svg" viewBox="0 0 200 200">
-                            <!-- Easy Track & Ring (Outer) -->
-                            <circle cx="100" cy="100" r="85" stroke="var(--lc-track)" stroke-width="6" fill="none" />
-                            <circle id="svg-easy" cx="100" cy="100" r="85" stroke="var(--lc-easy)" stroke-width="6" fill="none" stroke-linecap="round" />
-                            
-                            <!-- Medium Track & Ring (Middle) -->
-                            <circle cx="100" cy="100" r="75" stroke="var(--lc-track)" stroke-width="6" fill="none" />
-                            <circle id="svg-med" cx="100" cy="100" r="75" stroke="var(--lc-med)" stroke-width="6" fill="none" stroke-linecap="round" />
-                            
-                            <!-- Hard Track & Ring (Inner) -->
-                            <circle cx="100" cy="100" r="65" stroke="var(--lc-track)" stroke-width="6" fill="none" />
-                            <circle id="svg-hard" cx="100" cy="100" r="65" stroke="var(--lc-hard)" stroke-width="6" fill="none" stroke-linecap="round" />
-                        </svg>
-                        <div class="lc-ring-center">
-                            <div><span class="lc-number-large" id="lc-total-num">0</span><span class="lc-number-small">/4100</span></div>
-                            <div style="font-size: 14px; color: var(--text-secondary); margin-top: 4px;">✓ Solved</div>
+            <div class="dashboard-layout" style="grid-template-columns: 1fr;">
+                <!-- Left Column: Telemetry & Input -->
+                <div class="main-column">
+                    <h2>Telemetry Profile</h2>
+                    
+                    <div class="telemetry-board">
+                        <div class="spec-cell">
+                            <div class="stat-value" id="total-solved">0</div>
+                            <div class="stat-label">Total Completed</div>
+                        </div>
+                        <div class="spec-cell">
+                            <div class="stat-value" style="color: var(--ink);" id="easy-solved">0</div>
+                            <div class="stat-label">Easy</div>
+                            <div class="progress-bar-container"><div class="progress-bar" id="bar-easy" style="width: 0%;"></div></div>
+                        </div>
+                        <div class="spec-cell">
+                            <div class="stat-value" style="color: var(--body);" id="med-solved">0</div>
+                            <div class="stat-label">Medium</div>
+                            <div class="progress-bar-container"><div class="progress-bar medium" id="bar-med" style="width: 0%;"></div></div>
+                        </div>
+                        <div class="spec-cell">
+                            <div class="stat-value" style="color: var(--primary);" id="hard-solved">0</div>
+                            <div class="stat-label">Hard</div>
+                            <div class="progress-bar-container"><div class="progress-bar hard" id="bar-hard" style="width: 0%;"></div></div>
                         </div>
                     </div>
                     
-                    <div class="lc-stats-bars">
-                        <div class="lc-stat-block">
-                            <span class="lc-stat-label" style="color: var(--lc-easy);">Easy</span>
-                            <span class="lc-stat-value"><span id="lc-easy-num">0</span><span style="color:var(--text-secondary); font-size: 12px; font-weight:600;">/975</span></span>
-                        </div>
-                        <div class="lc-stat-block">
-                            <span class="lc-stat-label" style="color: var(--lc-med);">Med.</span>
-                            <span class="lc-stat-value"><span id="lc-med-num">0</span><span style="color:var(--text-secondary); font-size: 12px; font-weight:600;">/2138</span></span>
-                        </div>
-                        <div class="lc-stat-block">
-                            <span class="lc-stat-label" style="color: var(--lc-hard);">Hard</span>
-                            <span class="lc-stat-value"><span id="lc-hard-num">0</span><span style="color:var(--text-secondary); font-size: 12px; font-weight:600;">/987</span></span>
-                        </div>
+                    <div class="form-row" style="margin-top: var(--spacing-lg);">
+                        <input type="number" id="problem" placeholder="Enter LeetCode Problem Number (e.g., 462)" min="1">
                     </div>
-                </div>
-
-                <!-- Control Panel -->
-                <div style="display: flex; gap: 24px; margin-bottom: 40px; align-items: center;">
-                    <button class="button-primary-green" id="submit-btn" onclick="addProgress()" style="padding: 14px 48px; border-radius: 500px; font-size: 16px;">Commit to Streak</button>
-                    <input type="number" id="problem" class="text-input-pill" style="max-width: 300px;" placeholder="LeetCode Problem ID (e.g., 462)" min="1">
-                </div>
-
-                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 32px;">
-                    <!-- Track List (Logs) -->
-                    <div>
-                        <h2 class="section-title" style="margin-top: 0;">Your Top Tracks</h2>
-                        <div id="list" style="display: flex; flex-direction: column; gap: 4px;"></div>
-                    </div>
+                    <button class="button-primary" id="submit-btn" onclick="addProgress()">
+                        <span id="btn-text">Push to GitHub Streak</span>
+                    </button>
                     
-                    <!-- Right Rail (Leaderboard & Feed) -->
-                    <div>
-                        <h2 class="section-title" style="margin-top: 0;">Room 101 Leaderboard</h2>
-                        <div id="leaderboard-list" style="display: flex; flex-direction: column; gap: 4px; margin-bottom: 32px;"></div>
-                        
-                        <h2 class="section-title">Friend Activity</h2>
-                        <div id="activity-list" style="display: flex; flex-direction: column; gap: 4px;"></div>
+                    <h3 style="margin-top: var(--spacing-xl); border-bottom: 1px solid var(--hairline); padding-bottom: var(--spacing-xs); text-transform: uppercase; color: var(--ink); font-size: 14px; letter-spacing: 1.1px;">Your Logs</h3>
+                    <ul class="progress-list" id="list"></ul>
+                </div>
+            </div>
+            
+            <!-- Architecture Footer -->
+            <footer class="footer-dark">
+                <div class="footer-grid">
+                    <div class="footer-col">
+                        <h4>Frontend UI</h4>
+                        <p>Ferrari Design System</p>
+                        <p>Vanilla JS & CSS3</p>
+                        <p>HTMLResponse Rendering</p>
+                    </div>
+                    <div class="footer-col">
+                        <h4>Backend Core</h4>
+                        <p>Python 3.11</p>
+                        <p>FastAPI Framework</p>
+                        <p>LeetCode GraphQL API</p>
+                    </div>
+                    <div class="footer-col">
+                        <h4>Database & Auth</h4>
+                        <p>MongoDB Atlas Cluster</p>
+                        <p>GitHub OAuth App</p>
+                        <p>Pymongo Driver</p>
+                    </div>
+                    <div class="footer-col">
+                        <h4>DevOps Pipeline</h4>
+                        <p>GitHub Actions CI/CD</p>
+                        <p>Docker Containerization</p>
+                        <p>Vercel Production Hosting</p>
                     </div>
                 </div>
-
-            </div>
+            </footer>
         </div>
         
         <script>
-            // LeetCode Max Constants
-            const MAX_EASY = 975;
-            const MAX_MED = 2138;
-            const MAX_HARD = 987;
-            
-            // Circumferences for the 3 distinct rings
-            const CIRC_EASY = 2 * Math.PI * 85;
-            const CIRC_MED = 2 * Math.PI * 75;
-            const CIRC_HARD = 2 * Math.PI * 65;
-
             function getCookie(name) {
                 const value = `; ${document.cookie}`;
                 const parts = value.split(`; ${name}=`);
@@ -409,31 +406,17 @@ def read_root():
             }
 
             const activeUser = getCookie('github_user');
-            const authContainer = document.getElementById('auth-container');
 
             if (!activeUser) {
-                document.getElementById('login-view').style.display = 'flex';
-                authContainer.innerHTML = `<button class="button-outlined-pill" onclick="window.location.href='/auth/login'">Log In</button>`;
+                document.getElementById('login-view').style.display = 'block';
             } else {
                 document.getElementById('dashboard-view').style.display = 'block';
-                
-                let hour = new Date().getHours();
-                let greet = "Good evening";
-                if(hour < 12) greet = "Good morning";
-                else if (hour < 17) greet = "Good afternoon";
-                document.getElementById('greeting-title').innerText = greet;
-                
-                authContainer.innerHTML = `
-                    <div class="user-pill" onclick="window.location.href='/auth/logout'">
-                        <div class="user-avatar"><svg width="16" height="16" fill="#fff" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></div>
-                        ${activeUser}
-                    </div>
-                `;
+                document.getElementById('username-display').innerText = `(${activeUser})`;
                 loadDashboard();
             }
 
             async function loadDashboard() {
-                await Promise.all([loadProgress(), loadLeaderboard(), loadActivity()]);
+                await loadProgress();
             }
 
             async function loadProgress() {
@@ -445,85 +428,30 @@ def read_root():
                 const list = document.getElementById('list');
                 list.innerHTML = '';
                 
-                data.slice().reverse().forEach((item, index) => {
+                data.slice().reverse().forEach((item) => {
                     if (item.difficulty === 'Easy') easy++;
                     if (item.difficulty === 'Medium') med++;
                     if (item.difficulty === 'Hard') hard++;
                     
                     list.innerHTML += `
-                    <div class="track-row">
-                        <div class="track-col-index">${index + 1}</div>
-                        <div class="track-col-main">
-                            <div class="track-title">${item.problem}</div>
-                            <div class="track-subtitle">${item.topic}</div>
+                    <li class="progress-item">
+                        <div class="item-info">
+                            <span class="problem-name">${item.problem}</span>
+                            <span class="topic-tag">${item.topic}</span>
                         </div>
-                        <div class="badge">${item.difficulty}</div>
-                    </div>`;
+                        <span class="badge-pill">${item.difficulty}</span>
+                    </li>`;
                 });
                 
                 const total = data.length;
+                document.getElementById('total-solved').innerText = total;
+                document.getElementById('easy-solved').innerText = easy;
+                document.getElementById('med-solved').innerText = med;
+                document.getElementById('hard-solved').innerText = hard;
                 
-                document.getElementById('lc-total-num').innerText = total;
-                document.getElementById('lc-easy-num').innerText = easy;
-                document.getElementById('lc-med-num').innerText = med;
-                document.getElementById('lc-hard-num').innerText = hard;
-
-                // Update Concentric Rings Independently
-                const easyArc = (easy / MAX_EASY) * CIRC_EASY;
-                const medArc = (med / MAX_MED) * CIRC_MED;
-                const hardArc = (hard / MAX_HARD) * CIRC_HARD;
-
-                const easyRing = document.getElementById('svg-easy');
-                const medRing = document.getElementById('svg-med');
-                const hardRing = document.getElementById('svg-hard');
-
-                easyRing.style.strokeDasharray = `${easyArc} ${CIRC_EASY}`;
-                easyRing.style.strokeDashoffset = `0`;
-                
-                medRing.style.strokeDasharray = `${medArc} ${CIRC_MED}`;
-                medRing.style.strokeDashoffset = `0`;
-                
-                hardRing.style.strokeDasharray = `${hardArc} ${CIRC_HARD}`;
-                hardRing.style.strokeDashoffset = `0`;
-            }
-
-            async function loadLeaderboard() {
-                const response = await fetch('/api/leaderboard');
-                if (response.ok) {
-                    const data = await response.json();
-                    const list = document.getElementById('leaderboard-list');
-                    list.innerHTML = '';
-                    
-                    data.forEach((user, index) => {
-                        list.innerHTML += `
-                        <div class="track-row" style="padding: 12px 16px;">
-                            <div class="track-col-index" style="width: 24px; font-weight:700;">${index + 1}</div>
-                            <div class="track-col-main">
-                                <div class="track-title" style="font-size: 14px;">${user.username}</div>
-                            </div>
-                            <div style="font-size: 14px; font-weight: 700;">${user.solved}</div>
-                        </div>`;
-                    });
-                }
-            }
-            
-            async function loadActivity() {
-                const response = await fetch('/api/activity');
-                if (response.ok) {
-                    const data = await response.json();
-                    const list = document.getElementById('activity-list');
-                    list.innerHTML = '';
-                    
-                    data.forEach((item) => {
-                        list.innerHTML += `
-                        <div class="track-row" style="padding: 12px 16px;">
-                            <div class="track-col-main">
-                                <div class="track-title" style="font-size: 14px;">${item.username}</div>
-                                <div class="track-subtitle">Solved ${item.problem}</div>
-                            </div>
-                        </div>`;
-                    });
-                }
+                document.getElementById('bar-easy').style.width = total ? (easy/total)*100 + '%' : '0%';
+                document.getElementById('bar-med').style.width = total ? (med/total)*100 + '%' : '0%';
+                document.getElementById('bar-hard').style.width = total ? (hard/total)*100 + '%' : '0%';
             }
 
             async function addProgress() {
@@ -531,10 +459,11 @@ def read_root():
                 if (!problemNum) { alert("Please enter a problem number."); return; }
 
                 const btn = document.getElementById('submit-btn');
+                const btnText = document.getElementById('btn-text');
                 
+                btn.style.opacity = "0.7";
                 btn.style.pointerEvents = "none";
-                btn.style.transform = "scale(0.95)";
-                btn.innerText = "COMMITTING...";
+                btnText.innerText = "Processing...";
                 
                 const response = await fetch('/api/progress', {
                     method: 'POST',
@@ -544,15 +473,191 @@ def read_root():
                 
                 const data = await response.json();
                 
+                btn.style.opacity = "1";
                 btn.style.pointerEvents = "auto";
-                btn.style.transform = "scale(1)";
-                btn.innerText = "COMMIT TO STREAK";
+                btnText.innerText = "Push to GitHub Streak";
                 
                 if (!response.ok) { alert("Error: " + (data.detail || "Authentication required")); return; }
                 
                 document.getElementById('problem').value = '';
                 loadDashboard();
             }
+        </script>
+    </body>
+    </html>
+    """
+
+@app.get("/leaderboard", response_class=HTMLResponse)
+def leaderboard_page():
+    return """
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <title>Room 101 Leaderboard | Scuderia Tracker</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+        <style>
+            :root {
+                --primary: #da291c;
+                --primary-active: #b01e0a;
+                --canvas: #181818;
+                --canvas-elevated: #303030;
+                --ink: #ffffff;
+                --body: #969696;
+                --hairline: #303030;
+                --spacing-xs: 16px;
+                --spacing-sm: 24px;
+                --spacing-md: 32px;
+                --spacing-lg: 48px;
+                --spacing-xl: 64px;
+                --spacing-xxl: 96px;
+                --spacing-super: 128px;
+            }
+            body {
+                font-family: 'Inter', -apple-system, sans-serif;
+                background-color: var(--canvas);
+                color: var(--body);
+                margin: 0; padding: 0; min-height: 100vh;
+                display: flex; flex-direction: column;
+            }
+            
+            .top-nav {
+                height: 64px; background-color: var(--canvas); border-bottom: 1px solid var(--hairline);
+                display: flex; align-items: center; justify-content: space-between; padding: 0 var(--spacing-lg);
+                position: sticky; top: 0; z-index: 100; box-sizing: border-box; width: 100%;
+            }
+            .nav-brand { font-size: 14px; font-weight: 700; color: var(--ink); text-transform: uppercase; letter-spacing: 1.4px; }
+            .nav-links { display: flex; gap: var(--spacing-sm); align-items: center; }
+            .nav-link {
+                background: transparent; color: var(--body); border: none; font-family: inherit;
+                font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.65px;
+                cursor: pointer; text-decoration: none; padding: 8px 12px; transition: color 0.2s;
+            }
+            .nav-link:hover { color: var(--ink); }
+
+            .hero-band-cinema {
+                width: 100%; box-sizing: border-box;
+                background: linear-gradient(to bottom, rgba(24,24,24,0.3), rgba(24,24,24,1)), url('https://images.unsplash.com/photo-1555626906-fcf10d6851b4?q=80&w=2560&auto=format&fit=crop') center/cover;
+                padding: var(--spacing-xxl) var(--spacing-lg);
+                border-bottom: 1px solid var(--hairline);
+            }
+            .hero-header { max-width: 1280px; margin: 0 auto; }
+
+            h1 { font-size: 48px; font-weight: 500; color: var(--ink); margin: 0; line-height: 1.1; letter-spacing: -1.12px; text-transform: uppercase; }
+            .subtitle { font-size: 16px; font-weight: 400; color: var(--body); margin-top: 8px; line-height: 1.5; }
+
+            .dashboard-layout {
+                max-width: 1280px; margin: 0 auto; width: 100%; box-sizing: border-box;
+                padding: var(--spacing-xl) var(--spacing-lg) var(--spacing-super);
+                flex: 1;
+            }
+
+            .progress-list { padding: 0; list-style: none; display: flex; flex-direction: column; gap: var(--spacing-xs); margin: 0;}
+            .progress-item {
+                background: var(--canvas-elevated); padding: var(--spacing-sm);
+                border-radius: 0px; display: flex; justify-content: space-between; align-items: center;
+                border: 1px solid var(--hairline);
+            }
+            .problem-name { font-weight: 700; color: var(--ink); font-size: 20px; line-height: 1.2; text-transform: uppercase; }
+            .badge-pill { 
+                font-size: 11px; font-weight: 600; color: var(--ink); text-transform: uppercase; letter-spacing: 1.1px;
+                background: var(--canvas); padding: 4px 12px; border-radius: 9999px;
+            }
+            
+            .footer-dark {
+                background: var(--canvas); border-top: 1px solid var(--hairline);
+                padding: var(--spacing-xl) var(--spacing-lg); width: 100%; box-sizing: border-box;
+            }
+            .footer-grid {
+                max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--spacing-lg);
+            }
+            .footer-col h4 { color: var(--ink); font-size: 11px; text-transform: uppercase; letter-spacing: 1.1px; margin: 0 0 var(--spacing-sm) 0; }
+            .footer-col p { color: var(--body); font-size: 13px; margin: 0 0 8px 0; }
+        </style>
+    </head>
+    <body>
+        
+        <nav class="top-nav">
+            <div class="nav-brand">SCUDERIA TRACKER</div>
+            <div class="nav-links">
+                <a href="/" class="nav-link">Telemetry</a>
+                <a href="/leaderboard" class="nav-link" style="color: var(--primary);">Leaderboard</a>
+            </div>
+        </nav>
+
+        <div class="hero-band-cinema">
+            <div class="hero-header">
+                <h1>Room 101 Leaderboard</h1>
+                <div class="subtitle">Competitive rankings across campus participants.</div>
+            </div>
+        </div>
+
+        <div class="dashboard-layout">
+            <ul class="progress-list" id="leaderboard-list">
+                <li style="color: var(--body); text-align: center; padding: 32px;">Loading telemetry records...</li>
+            </ul>
+        </div>
+
+        <footer class="footer-dark">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>Frontend UI</h4>
+                    <p>Ferrari Design System</p>
+                    <p>Vanilla JS & CSS3</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Backend Core</h4>
+                    <p>Python 3.11</p>
+                    <p>FastAPI Framework</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Database & Auth</h4>
+                    <p>MongoDB Atlas Cluster</p>
+                    <p>GitHub OAuth App</p>
+                </div>
+                <div class="footer-col">
+                    <h4>DevOps Pipeline</h4>
+                    <p>GitHub Actions CI/CD</p>
+                    <p>Vercel Production Hosting</p>
+                </div>
+            </div>
+        </footer>
+
+        <script>
+            async function fetchLeaderboard() {
+                try {
+                    const response = await fetch('/api/leaderboard');
+                    if (response.status === 401) {
+                        document.getElementById('leaderboard-list').innerHTML = '<li style="color: var(--primary); text-align: center; padding: 32px;">Unauthorized. Please sign in via the main telemetry page.</li>';
+                        return;
+                    }
+                    const data = await response.json();
+                    const list = document.getElementById('leaderboard-list');
+                    list.innerHTML = '';
+                    
+                    if(data.length === 0) {
+                        list.innerHTML = '<li style="color: var(--body); text-align: center; padding: 32px;">No records found.</li>';
+                        return;
+                    }
+
+                    data.forEach((user, index) => {
+                        let rankColor = index === 0 ? 'var(--primary)' : 'var(--ink)';
+                        list.innerHTML += `
+                        <li class="progress-item">
+                            <div style="display: flex; align-items: center; gap: 24px;">
+                                <div style="font-size: 24px; font-weight: 700; color: ${rankColor}; width: 24px;">${index + 1}</div>
+                                <div class="problem-name">${user.username}</div>
+                            </div>
+                            <span class="badge-pill">${user.solved} Solved</span>
+                        </li>`;
+                    });
+                } catch(e) {
+                    console.error(e);
+                }
+            }
+            fetchLeaderboard();
         </script>
     </body>
     </html>
