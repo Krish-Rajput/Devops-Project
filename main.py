@@ -17,7 +17,7 @@ OAUTH_CLIENT_SECRET = os.getenv("OAUTH_CLIENT_SECRET")
 client = MongoClient(MONGO_URI, tlsCAFile=certifi.where())
 db = client.dsa_tracker
 collection = db.progress
-users_collection = db.users # New collection to securely store OAuth tokens
+users_collection = db.users 
 
 class ProgressRequest(BaseModel):
     problem_number: int
@@ -69,14 +69,12 @@ def fetch_leetcode_data(problem_number: int):
     return None
 
 def push_to_github(username: str, token: str, prob_id: int, title: str, topic: str, difficulty: str):
-    """Automates a commit to the user's GitHub repository to maintain their daily streak."""
     repo_name = "DSA-Tracker-Progress"
     headers = {
         "Authorization": f"Bearer {token}",
         "Accept": "application/vnd.github.v3+json"
     }
     
-    # 1. Check if the repo exists, if not, create it automatically
     check_repo = httpx.get(f"https://api.github.com/repos/{username}/{repo_name}", headers=headers)
     if check_repo.status_code == 404:
         httpx.post("https://api.github.com/user/repos", json={
@@ -85,7 +83,6 @@ def push_to_github(username: str, token: str, prob_id: int, title: str, topic: s
             "description": "🚀 Auto-generated Daily DSA Progress Tracker"
         }, headers=headers)
     
-    # 2. Push the solved problem as a Markdown file
     path = f"problems/LC_{prob_id}.md"
     content = f"# {title}\n- **Topic**: {topic}\n- **Difficulty**: {difficulty}\n\n*Logged automatically via DevOps DSA Tracker CI/CD pipeline.*"
     encoded_content = base64.b64encode(content.encode()).decode()
@@ -97,12 +94,10 @@ def push_to_github(username: str, token: str, prob_id: int, title: str, topic: s
     
     httpx.put(f"https://api.github.com/repos/{username}/{repo_name}/contents/{path}", json=data, headers=headers)
 
-
 # --- OAuth Authentication Routes ---
 
 @app.get("/auth/login")
 def login():
-    # Added scope=repo to request commit permissions
     return RedirectResponse(f"https://github.com/login/oauth/authorize?client_id={OAUTH_CLIENT_ID}&scope=repo")
 
 @app.get("/auth/callback")
@@ -125,7 +120,6 @@ def callback(code: str):
         user_r = http_client.get("https://api.github.com/user", headers={"Authorization": f"Bearer {access_token}"})
         username = user_r.json().get("login")
 
-    # Securely store the access token in MongoDB so the backend can commit on their behalf later
     users_collection.update_one(
         {"username": username},
         {"$set": {"access_token": access_token}},
@@ -184,7 +178,10 @@ def read_root():
             .badge.hard { background: #fee2e2; color: #991b1b; }
             
             .header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+            .nav-btn { background: #10b981; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold;}
             .logout-btn { background: #dc2626; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold;}
+            
+            #leaderboard-section { display: none; background: #f8fafc; padding: 20px; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 25px; }
         </style>
     </head>
     <body>
@@ -198,10 +195,19 @@ def read_root():
         <div class="container" id="dashboard-view" style="display: none;">
             <div class="header-bar">
                 <h1 style="margin: 0;">🚀 DSA Tracker</h1>
-                <button class="logout-btn" onclick="window.location.href='/auth/logout'">Logout <span id="username-display"></span></button>
+                <div style="display: flex; gap: 10px;">
+                    <button class="nav-btn" onclick="toggleLeaderboard()">🏆 Leaderboard</button>
+                    <button class="logout-btn" onclick="window.location.href='/auth/logout'">Logout <span id="username-display"></span></button>
+                </div>
             </div>
             <div class="subtitle">Log your daily LeetCode and coding problems</div>
             
+            <!-- Leaderboard View -->
+            <div id="leaderboard-section">
+                <h2 style="margin-top: 0; font-size: 18px; color: #1e293b; text-align: center;">🏆 Palm Hostel Room 101 Leaderboard</h2>
+                <ul class="progress-list" id="leaderboard-list" style="margin-top: 15px;"></ul>
+            </div>
+
             <div class="stats-row">
                 <div class="stat-box">
                     <div class="stat-value" id="total-solved">0</div>
@@ -235,6 +241,33 @@ def read_root():
                 document.getElementById('dashboard-view').style.display = 'block';
                 document.getElementById('username-display').innerText = `(${activeUser})`;
                 loadProgress();
+            }
+
+            async function toggleLeaderboard() {
+                const lbSection = document.getElementById('leaderboard-section');
+                if (lbSection.style.display === 'none') {
+                    lbSection.style.display = 'block';
+                    
+                    const response = await fetch('/api/leaderboard');
+                    if (response.ok) {
+                        const data = await response.json();
+                        const list = document.getElementById('leaderboard-list');
+                        list.innerHTML = '';
+                        const medals = ['🥇', '🥈', '🥉'];
+                        
+                        data.forEach((user, index) => {
+                            let rank = index < 3 ? medals[index] : `<span style="font-size: 14px; font-weight: bold; color: #64748b;">${index + 1}.</span>`;
+                            list.innerHTML += `
+                            <li class="progress-item" style="justify-content: flex-start; gap: 15px; padding: 10px 15px;">
+                                <div style="width: 25px; text-align: center;">${rank}</div>
+                                <strong style="color: #1f2937; font-size: 16px;">${user.username}</strong>
+                                <span class="badge easy" style="margin-left: auto;">${user.solved} solved</span>
+                            </li>`;
+                        });
+                    }
+                } else {
+                    lbSection.style.display = 'none';
+                }
             }
 
             async function loadProgress() {
@@ -290,6 +323,12 @@ def read_root():
                 
                 document.getElementById('problem').value = '';
                 loadProgress();
+                
+                // Refresh leaderboard if it is currently open
+                if (document.getElementById('leaderboard-section').style.display === 'block') {
+                    document.getElementById('leaderboard-section').style.display = 'none';
+                    toggleLeaderboard();
+                }
             }
         </script>
     </body>
@@ -325,7 +364,6 @@ def add_progress(req: ProgressRequest, github_user: Optional[str] = Cookie(None)
     }
     collection.insert_one(new_doc)
 
-    # Automatically push the commit to GitHub to maintain the streak
     user_record = users_collection.find_one({"username": github_user})
     if user_record and "access_token" in user_record:
         push_to_github(
@@ -338,3 +376,20 @@ def add_progress(req: ProgressRequest, github_user: Optional[str] = Cookie(None)
         )
 
     return {"status": "success", "added": prob_data["title"]}
+
+@app.get("/api/leaderboard")
+def get_leaderboard(github_user: Optional[str] = Cookie(None)):
+    if not github_user:
+        raise HTTPException(status_code=401, detail="Unauthorized. Please log in.")
+    
+    # Run an aggregation pipeline to group by username and sum the total solved problems
+    pipeline = [
+        {"$group": {"_id": "$username", "solved": {"$sum": 1}}},
+        {"$sort": {"solved": -1}},
+        {"$limit": 10}
+    ]
+    results = list(collection.aggregate(pipeline))
+    
+    # Format the data cleanly for the frontend
+    leaderboard = [{"username": r["_id"], "solved": r["solved"]} for r in results]
+    return leaderboard
