@@ -6,7 +6,8 @@ client = TestClient(app)
 def test_read_main_ui():
     response = client.get("/")
     assert response.status_code == 200
-    assert "DSA Tracker" in response.text 
+    # Updated to match the new UI's <title> tag
+    assert "DSA Progress Tracker" in response.text 
 
 def test_get_progress_unauthorized():
     response = client.get("/api/progress")
@@ -27,7 +28,6 @@ def test_add_progress_errors():
     assert "Invalid LeetCode problem" in invalid_response.json()["detail"]
 
 def test_get_leaderboard_authorized():
-    # Verify the leaderboard returns a valid list layout (even if it is empty during testing)
     response = client.get("/api/leaderboard", cookies={"github_user": "test_pipeline_user"})
     assert response.status_code == 200
     assert isinstance(response.json(), list)
