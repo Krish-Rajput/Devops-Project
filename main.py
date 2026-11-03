@@ -251,7 +251,7 @@ def read_root():
             .text-input-pill::placeholder { color: var(--text-secondary); }
             .text-input-pill:focus { outline: none; box-shadow: inset 0 0 0 1px var(--text-secondary); }
 
-            /* LeetCode Telemetry UI */
+            /* LeetCode Telemetry UI - 3 Concentric Rings */
             .lc-dashboard {
                 display: flex; gap: 32px; background-color: var(--surface-dark);
                 border-radius: 8px; padding: 24px; align-items: center; flex-wrap: wrap;
@@ -326,18 +326,21 @@ def read_root():
             <div id="dashboard-view" class="content-wrapper" style="display: none;">
                 <h1 id="greeting-title">Good evening</h1>
 
-                <!-- LeetCode Exact Progress Replica -->
+                <!-- LeetCode Exact Progress Replica (3 Concentric Rings) -->
                 <div class="lc-dashboard" style="margin-bottom: 32px;">
                     <div class="lc-ring-container">
                         <svg class="lc-ring-svg" viewBox="0 0 200 200">
-                            <!-- Track Background -->
-                            <circle cx="100" cy="100" r="85" stroke="var(--lc-track)" stroke-width="8" fill="none" />
-                            <!-- Easy Ring -->
-                            <circle id="svg-easy" cx="100" cy="100" r="85" stroke="var(--lc-easy)" stroke-width="8" fill="none" stroke-linecap="round" stroke-dasharray="0 534" />
-                            <!-- Medium Ring -->
-                            <circle id="svg-med" cx="100" cy="100" r="85" stroke="var(--lc-med)" stroke-width="8" fill="none" stroke-linecap="round" stroke-dasharray="0 534" />
-                            <!-- Hard Ring -->
-                            <circle id="svg-hard" cx="100" cy="100" r="85" stroke="var(--lc-hard)" stroke-width="8" fill="none" stroke-linecap="round" stroke-dasharray="0 534" />
+                            <!-- Easy Track & Ring (Outer) -->
+                            <circle cx="100" cy="100" r="85" stroke="var(--lc-track)" stroke-width="6" fill="none" />
+                            <circle id="svg-easy" cx="100" cy="100" r="85" stroke="var(--lc-easy)" stroke-width="6" fill="none" stroke-linecap="round" />
+                            
+                            <!-- Medium Track & Ring (Middle) -->
+                            <circle cx="100" cy="100" r="75" stroke="var(--lc-track)" stroke-width="6" fill="none" />
+                            <circle id="svg-med" cx="100" cy="100" r="75" stroke="var(--lc-med)" stroke-width="6" fill="none" stroke-linecap="round" />
+                            
+                            <!-- Hard Track & Ring (Inner) -->
+                            <circle cx="100" cy="100" r="65" stroke="var(--lc-track)" stroke-width="6" fill="none" />
+                            <circle id="svg-hard" cx="100" cy="100" r="65" stroke="var(--lc-hard)" stroke-width="6" fill="none" stroke-linecap="round" />
                         </svg>
                         <div class="lc-ring-center">
                             <div><span class="lc-number-large" id="lc-total-num">0</span><span class="lc-number-small">/4100</span></div>
@@ -388,12 +391,15 @@ def read_root():
         </div>
         
         <script>
-            // LeetCode Max Constants (from user attached image)
+            // LeetCode Max Constants
             const MAX_EASY = 975;
             const MAX_MED = 2138;
             const MAX_HARD = 987;
-            const MAX_TOTAL = 4100;
-            const CIRCUMFERENCE = 2 * Math.PI * 85; // SVG Circle r=85 => ~534.07
+            
+            // Circumferences for the 3 distinct rings
+            const CIRC_EASY = 2 * Math.PI * 85;
+            const CIRC_MED = 2 * Math.PI * 75;
+            const CIRC_HARD = 2 * Math.PI * 65;
 
             function getCookie(name) {
                 const value = `; ${document.cookie}`;
@@ -457,32 +463,28 @@ def read_root():
                 
                 const total = data.length;
                 
-                // Update Text Values
                 document.getElementById('lc-total-num').innerText = total;
                 document.getElementById('lc-easy-num').innerText = easy;
                 document.getElementById('lc-med-num').innerText = med;
                 document.getElementById('lc-hard-num').innerText = hard;
 
-                // Update SVG Ring (Segmented overlapping strokes)
-                const easyArc = (easy / MAX_TOTAL) * CIRCUMFERENCE;
-                const medArc = (med / MAX_TOTAL) * CIRCUMFERENCE;
-                const hardArc = (hard / MAX_TOTAL) * CIRCUMFERENCE;
+                // Update Concentric Rings Independently
+                const easyArc = (easy / MAX_EASY) * CIRC_EASY;
+                const medArc = (med / MAX_MED) * CIRC_MED;
+                const hardArc = (hard / MAX_HARD) * CIRC_HARD;
 
                 const easyRing = document.getElementById('svg-easy');
                 const medRing = document.getElementById('svg-med');
                 const hardRing = document.getElementById('svg-hard');
 
-                // Easy starts at 0
-                easyRing.style.strokeDasharray = `${easyArc} ${CIRCUMFERENCE}`;
+                easyRing.style.strokeDasharray = `${easyArc} ${CIRC_EASY}`;
                 easyRing.style.strokeDashoffset = `0`;
                 
-                // Med starts after Easy
-                medRing.style.strokeDasharray = `${medArc} ${CIRCUMFERENCE}`;
-                medRing.style.strokeDashoffset = `-${easyArc}`;
+                medRing.style.strokeDasharray = `${medArc} ${CIRC_MED}`;
+                medRing.style.strokeDashoffset = `0`;
                 
-                // Hard starts after Med
-                hardRing.style.strokeDasharray = `${hardArc} ${CIRCUMFERENCE}`;
-                hardRing.style.strokeDashoffset = `-${easyArc + medArc}`;
+                hardRing.style.strokeDasharray = `${hardArc} ${CIRC_HARD}`;
+                hardRing.style.strokeDashoffset = `0`;
             }
 
             async function loadLeaderboard() {
