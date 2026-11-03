@@ -148,143 +148,177 @@ def read_root():
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet">
         <style>
             :root {
-                --primary: #da291c;
-                --primary-active: #b01e0a;
-                --canvas: #181818;
-                --canvas-elevated: #303030;
-                --ink: #ffffff;
-                --body: #969696;
-                --hairline: #303030;
-                --spacing-xs: 16px;
-                --spacing-sm: 24px;
-                --spacing-md: 32px;
-                --spacing-lg: 48px;
-                --spacing-xl: 64px;
-                --spacing-xxl: 96px;
-                --spacing-super: 128px;
+                --install-green-top: #a4d007;
+                --install-green-mid: #799905;
+                --install-green-bottom: #5c7e10;
+                --install-highlight: #beee11;
+                --cta-cyan-bright: #06bfff;
+                --cta-cyan-mid: #2881a7;
+                --cta-blue: #2d73ff;
+                --canvas: #1b2838;
+                --rail: #141f2c;
+                --tile: #283645;
+                --inset: #384959;
+                --on-canvas: #ffffff;
+                --subtitle: #c6d4df;
+                --body-mute: #8b929a;
+                --shadow: #000000;
+                --radius-xs: 2px;
             }
             body {
-                font-family: 'Inter', -apple-system, sans-serif;
+                font-family: Arial, Helvetica, sans-serif;
                 background-color: var(--canvas);
-                color: var(--body);
+                color: var(--subtitle);
                 margin: 0; padding: 0; min-height: 100vh;
                 display: flex; flex-direction: column;
+                font-size: 13px;
             }
             
-            /* Cinematic Hero Band */
-            .hero-band-cinema {
-                width: 100%; box-sizing: border-box;
-                background: linear-gradient(to bottom, rgba(24,24,24,0.4), rgba(24,24,24,1)), url('https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?q=80&w=2560&auto=format&fit=crop') center/cover;
-                padding: var(--spacing-super) var(--spacing-lg) var(--spacing-xxl);
-                border-bottom: 1px solid var(--hairline);
+            h1, h2, h3, .brand-font {
+                font-family: 'Inter', sans-serif; /* Motiva Sans fallback */
+                color: var(--on-canvas);
+                margin: 0;
             }
-            .hero-header {
-                max-width: 1280px; margin: 0 auto;
-                display: flex; justify-content: space-between; align-items: flex-end;
+
+            /* Global Rail (Header) */
+            .primary-nav {
+                background-color: var(--rail);
+                height: 104px;
+                display: flex; align-items: center; justify-content: center;
+                box-shadow: inset 0 -1px 0 var(--shadow);
             }
+            .nav-content {
+                width: 100%; max-width: 940px;
+                display: flex; justify-content: space-between; align-items: center;
+                padding: 0 16px;
+            }
+            .nav-title {
+                font-size: 26px; font-weight: 500; letter-spacing: 1.104px; text-transform: uppercase;
+            }
+            .nav-actions { display: flex; gap: 10px; }
+
+            /* Buttons */
+            .button-install {
+                background: linear-gradient(to bottom, var(--install-green-top), var(--install-green-bottom));
+                border: none; border-top: 1px solid var(--install-highlight);
+                color: var(--on-canvas); font-family: 'Inter', Arial, sans-serif;
+                font-size: 13px; font-weight: 400; border-radius: var(--radius-xs);
+                padding: 6px 15px; height: 31px; cursor: pointer;
+                display: flex; justify-content: center; align-items: center;
+                text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+            }
+            .button-install:hover { background: var(--install-green-top); }
+
+            .button-cta {
+                background: linear-gradient(to bottom, var(--cta-cyan-bright), var(--cta-cyan-mid));
+                border: none; border-radius: var(--radius-xs);
+                color: var(--on-canvas); font-family: 'Inter', Arial, sans-serif;
+                font-size: 13px; font-weight: 400; padding: 6px 12px; height: 31px;
+                cursor: pointer; display: flex; justify-content: center; align-items: center;
+            }
+            .button-cta:hover { background: var(--cta-cyan-bright); }
+            
+            .button-secondary {
+                background-color: var(--inset); border: none; border-radius: var(--radius-xs);
+                color: var(--subtitle); font-family: 'Inter', Arial, sans-serif;
+                font-size: 13px; font-weight: 400; padding: 6px 12px; height: 31px;
+                cursor: pointer;
+            }
+            .button-secondary:hover { color: var(--on-canvas); }
 
             /* Dashboard Layout */
             .dashboard-layout {
-                max-width: 1280px; margin: 0 auto; width: 100%; box-sizing: border-box;
-                padding: var(--spacing-xl) var(--spacing-lg) var(--spacing-super);
-                display: grid; grid-template-columns: 2fr 1fr; gap: var(--spacing-xl);
-                flex: 1;
+                max-width: 940px; margin: 24px auto 96px; width: 100%; box-sizing: border-box;
+                display: grid; grid-template-columns: 2fr 1fr; gap: 24px; padding: 0 16px;
             }
-            @media (max-width: 1024px) {
+            @media (max-width: 768px) {
                 .dashboard-layout { grid-template-columns: 1fr; }
-                .hero-header { flex-direction: column; align-items: flex-start; gap: var(--spacing-md); }
             }
 
-            /* Typography */
-            h1 { font-size: 56px; font-weight: 500; color: var(--ink); margin: 0; line-height: 1.1; letter-spacing: -1.12px; text-transform: uppercase; }
-            h2 { font-size: 26px; font-weight: 500; color: var(--ink); margin: 0 0 var(--spacing-sm) 0; line-height: 1.5; letter-spacing: 0.195px; text-transform: uppercase; }
-            h3 { font-size: 18px; font-weight: 700; color: var(--ink); margin: 0 0 var(--spacing-xs) 0; text-transform: uppercase; }
-            .subtitle { font-size: 18px; font-weight: 400; color: var(--body); margin-top: 8px; line-height: 1.5; }
-
-            /* Buttons */
-            .btn-primary {
-                width: 100%; padding: 14px 32px; height: 48px;
-                background: var(--primary); color: var(--ink);
-                border: none; border-radius: 0px; 
-                font-size: 14px; font-weight: 700; line-height: 1.0; letter-spacing: 1.4px; text-transform: uppercase;
-                cursor: pointer; font-family: inherit; display: flex; justify-content: center; align-items: center;
-                transition: background 0.2s;
+            /* Featured Strip / Sections */
+            .featured-strip {
+                background-color: var(--inset); color: var(--on-canvas);
+                padding: 16px 24px; border-radius: var(--radius-xs); margin-bottom: 16px;
             }
-            .btn-primary:hover { background: var(--primary-active); }
+            .featured-strip h2 { font-size: 24px; font-weight: 300; }
             
-            .btn-outline {
-                background: transparent; color: var(--ink); border: 1px solid var(--ink); 
-                font-size: 13px; font-weight: 600; line-height: 1.4; letter-spacing: 0.65px; text-transform: uppercase;
-                cursor: pointer; font-family: inherit; padding: 12px 24px; border-radius: 0px;
-                transition: background 0.2s;
-            }
-            .btn-outline:hover { background: var(--canvas-elevated); }
+            .section-header { font-size: 14px; font-weight: 500; color: var(--on-canvas); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;}
 
-            /* Telemetry Dash */
-            .telemetry-board { display: flex; gap: var(--spacing-md); margin-bottom: var(--spacing-lg); }
-            .spec-cell { flex: 1; }
-            .stat-value { font-size: 80px; font-weight: 700; color: var(--primary); margin-bottom: 4px; line-height: 1.0; letter-spacing: -1.6px; }
-            .stat-label { font-size: 11px; color: var(--ink); font-weight: 600; letter-spacing: 1.1px; text-transform: uppercase; }
+            /* Telemetry Dash (Game Tiles) */
+            .telemetry-board { display: flex; gap: 10px; margin-bottom: 24px; }
+            .game-tile {
+                flex: 1; background-color: var(--tile); padding: 12px;
+                border-radius: var(--radius-xs);
+            }
+            .stat-value { font-family: 'Inter', sans-serif; font-size: 26px; font-weight: 300; color: var(--on-canvas); margin-bottom: 4px; }
+            .stat-label { font-size: 11px; color: var(--body-mute); text-transform: uppercase; }
             
-            .progress-bar-container { width: 100%; height: 4px; background: var(--canvas-elevated); margin-top: 12px; }
-            .progress-bar { height: 100%; background: var(--ink); transition: width 0.5s ease; }
-            .progress-bar.hard { background: var(--primary); }
-            .progress-bar.medium { background: var(--body); }
+            .progress-bar-container { width: 100%; height: 4px; background: var(--rail); margin-top: 8px; border-radius: var(--radius-xs); }
+            .progress-bar { height: 100%; background: var(--cta-cyan-mid); border-radius: var(--radius-xs); transition: width 0.5s ease; }
+            .progress-bar.hard { background: var(--install-green-mid); }
+            .progress-bar.medium { background: var(--cta-blue); }
 
             /* Forms */
-            .form-row { margin-bottom: var(--spacing-sm); }
-            input {
-                width: 100%; padding: 14px 16px; box-sizing: border-box;
-                background: var(--canvas-elevated); border: 1px solid var(--hairline);
-                border-radius: 0px; color: var(--ink); font-size: 14px; font-family: inherit; font-weight: 400;
-                height: 48px;
+            .form-row { margin-bottom: 16px; }
+            .text-input {
+                width: 100%; padding: 0 10px; box-sizing: border-box;
+                background-color: var(--rail); border: 1px solid var(--inset);
+                border-radius: var(--radius-xs); color: var(--on-canvas); font-size: 13px; font-family: Arial, sans-serif;
+                height: 34px;
             }
-            input::placeholder { color: var(--body); }
-            input:focus { outline: none; border-color: var(--ink); }
+            .text-input::placeholder { color: var(--body-mute); }
+            .text-input:focus { outline: none; border-color: var(--cta-cyan-mid); }
 
             /* Lists & Feed */
-            .progress-list { padding: 0; list-style: none; display: flex; flex-direction: column; gap: var(--spacing-xs); margin: 0;}
+            .progress-list { padding: 0; list-style: none; display: flex; flex-direction: column; gap: 5px; margin: 0;}
             .progress-item {
-                background: transparent; padding: var(--spacing-sm) 0;
-                border-bottom: 1px solid var(--hairline); border-radius: 0px; 
-                display: flex; justify-content: space-between; align-items: center;
+                background-color: var(--tile); padding: 8px 12px;
+                border-radius: var(--radius-xs); display: flex; justify-content: space-between; align-items: center;
             }
-            .item-info { display: flex; flex-direction: column; gap: 4px; }
-            .problem-name { font-weight: 700; color: var(--ink); font-size: 18px; line-height: 1.2; }
-            .topic-tag { font-size: 13px; color: var(--body); font-weight: 400;}
-            .feed-user { color: var(--primary); font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: 0.65px;}
+            .item-info { display: flex; flex-direction: column; gap: 2px; }
+            .problem-name { font-family: 'Inter', sans-serif; font-weight: 500; color: var(--on-canvas); font-size: 15px; }
+            .topic-tag { font-size: 12px; color: var(--subtitle); }
+            .feed-user { color: var(--cta-cyan-link); font-weight: 400; font-size: 12px; }
             
-            .badge-pill { 
-                font-size: 11px; font-weight: 600; color: var(--ink); text-transform: uppercase; letter-spacing: 1.1px;
-                background: var(--canvas-elevated); padding: 4px 12px; border-radius: 9999px;
+            .category-pill { 
+                font-size: 12px; font-weight: 500; color: var(--subtitle); 
+                background-color: var(--inset); padding: 4px 8px; border-radius: var(--radius-xs);
             }
 
             /* Architecture Footer */
-            .footer-dark {
-                background: var(--canvas); border-top: 1px solid var(--hairline);
-                padding: var(--spacing-xl) var(--spacing-lg); width: 100%; box-sizing: border-box;
+            .footer-section {
+                background-color: var(--rail); padding: 24px 16px; width: 100%; box-sizing: border-box;
+                margin-top: auto; border-top: 1px solid var(--shadow);
             }
             .footer-grid {
-                max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--spacing-lg);
+                max-width: 940px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 24px;
             }
-            .footer-col h4 { color: var(--ink); font-size: 11px; text-transform: uppercase; letter-spacing: 1.1px; margin: 0 0 var(--spacing-sm) 0; }
-            .footer-col p { color: var(--body); font-size: 13px; margin: 0 0 8px 0; }
+            .footer-col h4 { color: var(--on-canvas); font-size: 12px; text-transform: uppercase; margin: 0 0 10px 0; }
+            .footer-col p { color: var(--body-mute); font-size: 11px; margin: 0 0 6px 0; line-height: 12px; }
         </style>
     </head>
     <body>
         
+        <!-- Global Header -->
+        <div class="primary-nav">
+            <div class="nav-content">
+                <div class="nav-title">DSA PROGRESS TRACKER</div>
+                <div class="nav-actions" id="nav-actions-container">
+                    <!-- Injected via JS based on auth state -->
+                </div>
+            </div>
+        </div>
+
         <!-- Login Screen -->
         <div id="login-view" style="display: none;">
-            <div class="hero-band-cinema" style="min-height: 100vh; display: flex; flex-direction: column; justify-content: flex-end;">
-                <div class="hero-header" style="flex-direction: column; align-items: flex-start;">
-                    <div>
-                        <h1>Scuderia Tracker</h1>
-                        <div class="subtitle">Secure CI/CD Portfolio Project</div>
-                    </div>
-                    <button class="btn-primary" style="max-width: 300px; margin-top: var(--spacing-md);" onclick="window.location.href='/auth/login'">
+            <div class="dashboard-layout" style="grid-template-columns: 1fr; max-width: 600px; text-align: center;">
+                <div class="featured-strip">
+                    <h2 style="margin-bottom: 16px;">Welcome to the Tracker</h2>
+                    <p style="color: var(--subtitle); font-size: 15px; margin-bottom: 24px;">Secure CI/CD Portfolio Project.</p>
+                    <button class="button-install" style="margin: 0 auto; width: auto; padding: 6px 32px;" onclick="window.location.href='/auth/login'">
                         Connect GitHub
                     </button>
                 </div>
@@ -294,87 +328,79 @@ def read_root():
         <!-- Dashboard Screen -->
         <div id="dashboard-view" style="display: none; width: 100%;">
             
-            <div class="hero-band-cinema">
-                <div class="hero-header">
-                    <div>
-                        <h1>DSA Progress Tracker</h1>
-                        <div class="subtitle">Engineering precision. Automated streaks.</div>
-                    </div>
-                    <button class="btn-outline" onclick="window.location.href='/auth/logout'">Sign out <span id="username-display" style="text-transform: none; letter-spacing: 0;"></span></button>
-                </div>
-            </div>
-
             <div class="dashboard-layout">
                 <!-- Left Column: Telemetry & Input -->
                 <div class="main-column">
-                    <h2>Telemetry Profile</h2>
+                    <div class="section-header">Telemetry Profile</div>
                     
                     <div class="telemetry-board">
-                        <div class="spec-cell">
+                        <div class="game-tile">
                             <div class="stat-value" id="total-solved">0</div>
                             <div class="stat-label">Total Completed</div>
                         </div>
-                        <div class="spec-cell">
-                            <div class="stat-value" style="color: var(--ink);" id="easy-solved">0</div>
+                        <div class="game-tile">
+                            <div class="stat-value" id="easy-solved">0</div>
                             <div class="stat-label">Easy</div>
                             <div class="progress-bar-container"><div class="progress-bar" id="bar-easy" style="width: 0%;"></div></div>
                         </div>
-                        <div class="spec-cell">
-                            <div class="stat-value" style="color: var(--body);" id="med-solved">0</div>
+                        <div class="game-tile">
+                            <div class="stat-value" id="med-solved">0</div>
                             <div class="stat-label">Medium</div>
                             <div class="progress-bar-container"><div class="progress-bar medium" id="bar-med" style="width: 0%;"></div></div>
                         </div>
-                        <div class="spec-cell">
-                            <div class="stat-value" style="color: var(--primary);" id="hard-solved">0</div>
+                        <div class="game-tile">
+                            <div class="stat-value" id="hard-solved">0</div>
                             <div class="stat-label">Hard</div>
                             <div class="progress-bar-container"><div class="progress-bar hard" id="bar-hard" style="width: 0%;"></div></div>
                         </div>
                     </div>
                     
-                    <div class="form-row" style="margin-top: var(--spacing-lg);">
-                        <input type="number" id="problem" placeholder="Enter LeetCode Problem Number (e.g., 462)" min="1">
+                    <div class="featured-strip" style="background-color: var(--tile);">
+                        <div class="form-row">
+                            <input type="number" id="problem" class="text-input" placeholder="Enter LeetCode Problem Number (e.g., 462)" min="1">
+                        </div>
+                        <button class="button-install" id="submit-btn" style="width: 100%;" onclick="addProgress()">
+                            <span id="btn-text">Push to GitHub Streak</span>
+                        </button>
                     </div>
-                    <button class="btn-primary" id="submit-btn" onclick="addProgress()">
-                        <span id="btn-text">Push to GitHub Streak</span>
-                    </button>
                     
-                    <h3 style="margin-top: var(--spacing-xl); border-bottom: 1px solid var(--hairline); padding-bottom: var(--spacing-xs);">Your Logs</h3>
+                    <div class="section-header" style="margin-top: 24px;">Your Library</div>
                     <ul class="progress-list" id="list"></ul>
                 </div>
 
                 <!-- Right Column: Live Feed & Leaderboard -->
                 <div class="side-column">
-                    <h2>Room 101 Leaderboard</h2>
-                    <ul class="progress-list" id="leaderboard-list" style="margin-bottom: var(--spacing-xl);"></ul>
+                    <div class="section-header">Room 101 Leaderboard</div>
+                    <ul class="progress-list" id="leaderboard-list" style="margin-bottom: 24px;"></ul>
                     
-                    <h2>Live Activity Feed</h2>
+                    <div class="section-header">Community Activity</div>
                     <ul class="progress-list" id="activity-list"></ul>
                 </div>
             </div>
             
             <!-- Architecture Footer -->
-            <footer class="footer-dark">
+            <footer class="footer-section">
                 <div class="footer-grid">
                     <div class="footer-col">
-                        <h4>Frontend UI</h4>
-                        <p>Ferrari Design System</p>
+                        <h4 class="brand-font">Frontend UI</h4>
+                        <p>Steam Design System</p>
                         <p>Vanilla JS & CSS3</p>
                         <p>HTMLResponse Rendering</p>
                     </div>
                     <div class="footer-col">
-                        <h4>Backend Core</h4>
+                        <h4 class="brand-font">Backend Core</h4>
                         <p>Python 3.11</p>
                         <p>FastAPI Framework</p>
                         <p>LeetCode GraphQL API</p>
                     </div>
                     <div class="footer-col">
-                        <h4>Database & Auth</h4>
+                        <h4 class="brand-font">Database & Auth</h4>
                         <p>MongoDB Atlas Cluster</p>
                         <p>GitHub OAuth App</p>
                         <p>Pymongo Driver</p>
                     </div>
                     <div class="footer-col">
-                        <h4>DevOps Pipeline</h4>
+                        <h4 class="brand-font">DevOps Pipeline</h4>
                         <p>GitHub Actions CI/CD</p>
                         <p>Docker Containerization</p>
                         <p>Vercel Production Hosting</p>
@@ -392,12 +418,17 @@ def read_root():
             }
 
             const activeUser = getCookie('github_user');
+            const navActions = document.getElementById('nav-actions-container');
 
             if (!activeUser) {
                 document.getElementById('login-view').style.display = 'block';
+                navActions.innerHTML = `<button class="button-install" onclick="window.location.href='/auth/login'">Login</button>`;
             } else {
-                document.getElementById('dashboard-view').style.display = 'flex';
-                document.getElementById('username-display').innerText = `(${activeUser})`;
+                document.getElementById('dashboard-view').style.display = 'block';
+                navActions.innerHTML = `
+                    <button class="button-cta" style="pointer-events: none;">${activeUser}</button>
+                    <button class="button-secondary" onclick="window.location.href='/auth/logout'">Logout</button>
+                `;
                 loadDashboard();
             }
 
@@ -425,7 +456,7 @@ def read_root():
                             <span class="problem-name">${item.problem}</span>
                             <span class="topic-tag">${item.topic}</span>
                         </div>
-                        <span class="badge-pill">${item.difficulty}</span>
+                        <span class="category-pill">${item.difficulty}</span>
                     </li>`;
                 });
                 
@@ -449,10 +480,12 @@ def read_root():
                     
                     data.forEach((user, index) => {
                         list.innerHTML += `
-                        <li class="progress-item" style="border:none; padding: 8px 0;">
-                            <div style="font-size: 26px; font-weight: 700; color: var(--primary); width: 30px; letter-spacing: -0.36px;">${index + 1}</div>
-                            <div class="problem-name" style="flex: 1;">${user.username}</div>
-                            <div class="stat-label">${user.solved} solved</div>
+                        <li class="progress-item">
+                            <div class="item-info" style="flex-direction: row; align-items: center; gap: 12px;">
+                                <div style="font-family: 'Inter', sans-serif; font-size: 18px; font-weight: 500; color: var(--on-canvas);">${index + 1}</div>
+                                <div class="problem-name" style="font-size: 14px;">${user.username}</div>
+                            </div>
+                            <div class="topic-tag">${user.solved} solved</div>
                         </li>`;
                     });
                 }
@@ -467,12 +500,9 @@ def read_root():
                     
                     data.forEach((item) => {
                         list.innerHTML += `
-                        <li class="progress-item">
-                            <div class="item-info">
-                                <span class="feed-user">${item.username}</span>
-                                <span class="problem-name" style="font-size: 14px; font-weight: 500;">Solved ${item.problem}</span>
-                            </div>
-                            <span class="badge-pill" style="background: transparent; border: 1px solid var(--hairline);">${item.difficulty}</span>
+                        <li class="progress-item" style="flex-direction: column; align-items: flex-start; gap: 4px;">
+                            <div class="feed-user">${item.username}</div>
+                            <div class="topic-tag">Solved <span style="color: var(--on-canvas); font-family: 'Inter', sans-serif;">${item.problem}</span></div>
                         </li>`;
                     });
                 }
@@ -485,7 +515,7 @@ def read_root():
                 const btn = document.getElementById('submit-btn');
                 const btnText = document.getElementById('btn-text');
                 
-                btn.style.opacity = "0.7";
+                btn.style.opacity = "0.5";
                 btn.style.pointerEvents = "none";
                 btnText.innerText = "Processing...";
                 
@@ -573,6 +603,5 @@ def get_activity(github_user: Optional[str] = Cookie(None)):
     if not github_user:
         raise HTTPException(status_code=401, detail="Unauthorized. Please log in.")
     
-    # Fetches the 10 most recent globally solved problems across all users
     results = list(collection.find({}, {"_id": 0}).sort("_id", -1).limit(10))
     return results
