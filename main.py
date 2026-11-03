@@ -142,85 +142,167 @@ def logout():
 def read_root():
     return """
     <!DOCTYPE html>
-    <html>
+    <html lang="en">
     <head>
         <title>DSA Progress Tracker</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
         <style>
-            body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f4f7f6; margin: 0; padding: 20px; display: flex; justify-content: center; }
-            .container { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); width: 100%; max-width: 600px; }
-            h1 { color: #111827; font-size: 24px; text-align: center; margin-bottom: 5px; }
-            .subtitle { text-align: center; color: #6b7280; font-size: 14px; margin-bottom: 25px; }
+            @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
             
-            .auth-btn { width: 100%; background: #24292e; color: white; border: none; padding: 12px; border-radius: 6px; font-size: 16px; font-weight: 600; cursor: pointer; transition: 0.2s; display: flex; justify-content: center; align-items: center; gap: 8px;}
-            .auth-btn:hover { background: #1b1f23; }
+            /* Animated Background */
+            @keyframes gradientBG {
+                0% { background-position: 0% 50%; }
+                50% { background-position: 100% 50%; }
+                100% { background-position: 0% 50%; }
+            }
+            body {
+                font-family: 'Inter', sans-serif;
+                margin: 0; padding: 20px; min-height: 100vh;
+                display: flex; justify-content: center; align-items: flex-start;
+                background: linear-gradient(-45deg, #0f172a, #1e1b4b, #312e81, #1e293b);
+                background-size: 400% 400%;
+                animation: gradientBG 15s ease infinite;
+                color: #f8fafc;
+            }
+
+            /* Glassmorphism Container */
+            .container {
+                background: rgba(15, 23, 42, 0.6);
+                backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                padding: 40px; border-radius: 24px;
+                box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+                width: 100%; max-width: 650px; margin-top: 4vh;
+                animation: slideUp 0.6s ease-out;
+            }
+            @keyframes slideUp {
+                from { opacity: 0; transform: translateY(40px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+
+            h1 { text-align: center; font-size: 32px; font-weight: 800; margin: 0 0 5px 0; background: -webkit-linear-gradient(45deg, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+            .subtitle { text-align: center; color: #94a3b8; font-size: 14px; margin-bottom: 30px; }
+
+            /* Stats */
+            .stats-row { display: flex; gap: 20px; margin-bottom: 30px; }
+            .stat-box {
+                flex: 1; background: rgba(255, 255, 255, 0.03); padding: 20px;
+                border-radius: 16px; text-align: center; border: 1px solid rgba(255, 255, 255, 0.05);
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+            }
+            .stat-box:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 25px -5px rgba(56, 189, 248, 0.2);
+                border-color: rgba(56, 189, 248, 0.4);
+            }
+            .stat-value { font-size: 36px; font-weight: 800; color: #e0e7ff; margin-bottom: 5px; }
+            .stat-label { font-size: 12px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;}
+
+            /* Inputs & Buttons */
+            .form-row { margin-bottom: 20px; }
+            input {
+                width: 100%; padding: 15px; box-sizing: border-box;
+                background: rgba(0, 0, 0, 0.2); border: 1px solid rgba(255, 255, 255, 0.1);
+                border-radius: 12px; color: white; font-size: 16px; text-align: center;
+                transition: all 0.3s ease;
+            }
+            input:focus { outline: none; border-color: #38bdf8; box-shadow: 0 0 15px rgba(56, 189, 248, 0.3); }
+            input::placeholder { color: #64748b; }
+
+            .submit-btn {
+                width: 100%; padding: 15px;
+                background: linear-gradient(45deg, #2563eb, #4f46e5); color: white;
+                border: none; border-radius: 12px; font-size: 16px; font-weight: bold;
+                cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
+                display: flex; justify-content: center; align-items: center; gap: 10px;
+            }
+            .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(37, 99, 235, 0.6); }
+            .submit-btn:active { transform: scale(0.98); }
+
+            .auth-btn { 
+                width: 100%; padding: 15px; background: rgba(255,255,255,0.1); color: white; 
+                border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; font-size: 16px; 
+                font-weight: 600; cursor: pointer; transition: all 0.3s ease; 
+                display: flex; justify-content: center; align-items: center; gap: 10px; 
+            }
+            .auth-btn:hover { background: rgba(255,255,255,0.2); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(255,255,255,0.1);}
+
+            /* Lists */
+            .progress-list { margin-top: 30px; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 12px;}
+            .progress-item {
+                background: rgba(255, 255, 255, 0.03); padding: 18px 20px;
+                border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 12px;
+                display: flex; justify-content: space-between; align-items: center;
+                transition: all 0.3s ease; animation: fadeIn 0.5s ease-out forwards; opacity: 0;
+            }
+            .progress-item:hover { transform: translateX(5px); background: rgba(255, 255, 255, 0.06); border-color: rgba(255, 255, 255, 0.1); }
+            @keyframes fadeIn { to { opacity: 1; } }
+
+            .item-info { display: flex; flex-direction: column; gap: 6px; }
+            .problem-name { font-weight: 600; color: #f8fafc; font-size: 15px; }
+            .topic-tag { font-size: 12px; color: #94a3b8; display: flex; align-items: center; gap: 5px;}
+
+            /* Badges */
+            .badge { padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+            .badge.easy { background: rgba(34, 197, 94, 0.15); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.3); }
+            .badge.medium { background: rgba(234, 179, 8, 0.15); color: #fde047; border: 1px solid rgba(234, 179, 8, 0.3); }
+            .badge.hard { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
+
+            /* Header Controls */
+            .header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 20px;}
+            .nav-btn { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: bold; transition: all 0.3s ease;}
+            .nav-btn:hover { background: rgba(16, 185, 129, 0.25); transform: translateY(-2px); box-shadow: 0 4px 10px rgba(16,185,129,0.2);}
+            .logout-btn { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: bold; transition: all 0.3s ease;}
+            .logout-btn:hover { background: rgba(239, 68, 68, 0.25); transform: translateY(-2px); box-shadow: 0 4px 10px rgba(239,68,68,0.2);}
+
+            #leaderboard-section { display: none; background: rgba(0,0,0,0.2); padding: 25px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 30px; animation: slideDown 0.4s ease-out; }
+            @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
             
-            .stats-row { display: flex; gap: 15px; margin-bottom: 25px; }
-            .stat-box { flex: 1; background: #f9fafb; padding: 15px; border-radius: 8px; text-align: center; border: 1px solid #e5e7eb; }
-            .stat-value { font-size: 28px; font-weight: bold; color: #3b82f6; }
-            .stat-label { font-size: 12px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; }
-            
-            .form-row { display: flex; gap: 10px; margin-bottom: 15px; }
-            .form-group { flex: 1; }
-            input { width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; box-sizing: border-box; font-size: 14px; text-align: center; }
-            .submit-btn { width: 100%; background: #3b82f6; color: white; border: none; padding: 12px; border-radius: 6px; font-size: 16px; font-weight: 600; cursor: pointer; transition: 0.2s; }
-            .submit-btn:hover { background: #2563eb; }
-            
-            .progress-list { margin-top: 30px; padding: 0; list-style: none; }
-            .progress-item { background: white; padding: 15px; border: 1px solid #e5e7eb; margin-bottom: 10px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; transition: 0.2s;}
-            .item-info { display: flex; flex-direction: column; gap: 4px; }
-            .problem-name { font-weight: 600; color: #1f2937; }
-            .topic-tag { font-size: 12px; color: #6b7280; }
-            
-            .badge { padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
-            .badge.easy { background: #dcfce7; color: #166534; }
-            .badge.medium { background: #fef08a; color: #854d0e; }
-            .badge.hard { background: #fee2e2; color: #991b1b; }
-            
-            .header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-            .nav-btn { background: #10b981; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold;}
-            .logout-btn { background: #dc2626; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold;}
-            
-            #leaderboard-section { display: none; background: #f8fafc; padding: 20px; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 25px; }
+            /* Loading Spinner */
+            .spinner { display: inline-block; width: 18px; height: 18px; border: 3px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: white; animation: spin 1s ease-in-out infinite;}
+            @keyframes spin { to { transform: rotate(360deg); } }
         </style>
     </head>
     <body>
         
         <div class="container" id="login-view" style="display: none;">
-            <h1>🚀 DSA Tracker</h1>
-            <div class="subtitle">Secure your progress with GitHub</div>
-            <button class="auth-btn" onclick="window.location.href='/auth/login'">Sign in with GitHub</button>
+            <div style="text-align: center; font-size: 40px; margin-bottom: 10px;">⚡</div>
+            <h1>DSA Tracker</h1>
+            <div class="subtitle">Secure CI/CD Portfolio Project</div>
+            <button class="auth-btn" onclick="window.location.href='/auth/login'">
+                <i class="fa-brands fa-github" style="font-size: 20px;"></i> Connect GitHub to Continue
+            </button>
         </div>
 
         <div class="container" id="dashboard-view" style="display: none;">
             <div class="header-bar">
-                <h1 style="margin: 0;">🚀 DSA Tracker</h1>
+                <h1 style="margin: 0; font-size: 22px;">⚡ Tracker</h1>
                 <div style="display: flex; gap: 10px;">
-                    <button class="nav-btn" onclick="toggleLeaderboard()">🏆 Leaderboard</button>
-                    <button class="logout-btn" onclick="window.location.href='/auth/logout'">Logout <span id="username-display"></span></button>
+                    <button class="nav-btn" onclick="toggleLeaderboard()"><i class="fa-solid fa-trophy"></i> Rank</button>
+                    <button class="logout-btn" onclick="window.location.href='/auth/logout'"><i class="fa-solid fa-right-from-bracket"></i> <span id="username-display"></span></button>
                 </div>
             </div>
-            <div class="subtitle">Log your daily LeetCode and coding problems</div>
             
-            <!-- Leaderboard View -->
             <div id="leaderboard-section">
-                <h2 style="margin-top: 0; font-size: 18px; color: #1e293b; text-align: center;">🏆 Palm Hostel Room 101 Leaderboard</h2>
+                <h2 style="margin-top: 0; font-size: 18px; color: #e0e7ff; text-align: center;"><i class="fa-solid fa-crown" style="color: #fbbf24;"></i> Leaderboard</h2>
                 <ul class="progress-list" id="leaderboard-list" style="margin-top: 15px;"></ul>
             </div>
 
             <div class="stats-row">
                 <div class="stat-box">
                     <div class="stat-value" id="total-solved">0</div>
-                    <div class="stat-label">Total Solved</div>
+                    <div class="stat-label">Problems Solved</div>
                 </div>
             </div>
             
             <div class="form-row">
-                <div class="form-group">
-                    <input type="number" id="problem" placeholder="Enter LeetCode Problem Number (e.g., 462)" min="1">
-                </div>
+                <input type="number" id="problem" placeholder="Enter LeetCode Problem Number (e.g., 462)" min="1">
             </div>
-            <button class="submit-btn" onclick="addProgress()">Log Progress</button>
+            <button class="submit-btn" id="submit-btn" onclick="addProgress()">
+                <div class="spinner" id="spinner" style="display: none;"></div>
+                <span id="btn-text">Push to GitHub Streak</span>
+            </button>
             
             <ul class="progress-list" id="list"></ul>
         </div>
@@ -239,7 +321,7 @@ def read_root():
                 document.getElementById('login-view').style.display = 'block';
             } else {
                 document.getElementById('dashboard-view').style.display = 'block';
-                document.getElementById('username-display').innerText = `(${activeUser})`;
+                document.getElementById('username-display').innerText = `${activeUser}`;
                 loadProgress();
             }
 
@@ -253,14 +335,14 @@ def read_root():
                         const data = await response.json();
                         const list = document.getElementById('leaderboard-list');
                         list.innerHTML = '';
-                        const medals = ['🥇', '🥈', '🥉'];
+                        const medals = ['<i class="fa-solid fa-medal" style="color: #fbbf24; font-size: 20px;"></i>', '<i class="fa-solid fa-medal" style="color: #94a3b8; font-size: 20px;"></i>', '<i class="fa-solid fa-medal" style="color: #b45309; font-size: 20px;"></i>'];
                         
                         data.forEach((user, index) => {
-                            let rank = index < 3 ? medals[index] : `<span style="font-size: 14px; font-weight: bold; color: #64748b;">${index + 1}.</span>`;
+                            let rank = index < 3 ? medals[index] : `<span style="font-size: 16px; font-weight: 800; color: #475569;">${index + 1}</span>`;
                             list.innerHTML += `
-                            <li class="progress-item" style="justify-content: flex-start; gap: 15px; padding: 10px 15px;">
-                                <div style="width: 25px; text-align: center;">${rank}</div>
-                                <strong style="color: #1f2937; font-size: 16px;">${user.username}</strong>
+                            <li class="progress-item" style="justify-content: flex-start; gap: 20px; padding: 12px 20px;">
+                                <div style="width: 30px; text-align: center;">${rank}</div>
+                                <strong style="color: #f8fafc; font-size: 17px; letter-spacing: 0.5px;">${user.username}</strong>
                                 <span class="badge easy" style="margin-left: auto;">${user.solved} solved</span>
                             </li>`;
                         });
@@ -282,13 +364,14 @@ def read_root():
                 const list = document.getElementById('list');
                 list.innerHTML = '';
                 
-                data.slice().reverse().forEach(item => {
+                data.slice().reverse().forEach((item, index) => {
                     let badgeClass = item.difficulty.toLowerCase();
+                    let delay = index * 0.1;
                     list.innerHTML += `
-                    <li class="progress-item">
+                    <li class="progress-item" style="animation-delay: ${delay}s">
                         <div class="item-info">
                             <span class="problem-name">${item.problem}</span>
-                            <span class="topic-tag">📚 ${item.topic}</span>
+                            <span class="topic-tag"><i class="fa-solid fa-code" style="font-size: 10px;"></i> ${item.topic}</span>
                         </div>
                         <span class="badge ${badgeClass}">${item.difficulty}</span>
                     </li>`;
@@ -302,9 +385,15 @@ def read_root():
                     return;
                 }
 
-                const btn = document.querySelector('.submit-btn');
-                btn.innerText = "Pushing to GitHub...";
-                btn.style.background = "#6b7280";
+                const btn = document.getElementById('submit-btn');
+                const btnText = document.getElementById('btn-text');
+                const spinner = document.getElementById('spinner');
+                
+                // Loading State Animation
+                btn.style.background = "rgba(255,255,255,0.1)";
+                btn.style.pointerEvents = "none";
+                btnText.innerText = "Processing...";
+                spinner.style.display = "inline-block";
                 
                 const response = await fetch('/api/progress', {
                     method: 'POST',
@@ -313,8 +402,12 @@ def read_root():
                 });
                 
                 const data = await response.json();
-                btn.innerText = "Log Progress";
-                btn.style.background = "#3b82f6";
+                
+                // Reset Button State
+                btn.style.background = "linear-gradient(45deg, #2563eb, #4f46e5)";
+                btn.style.pointerEvents = "auto";
+                btnText.innerText = "Push to GitHub Streak";
+                spinner.style.display = "none";
                 
                 if (!response.ok) {
                     alert("Error: " + (data.detail || "Authentication required")); 
@@ -324,7 +417,6 @@ def read_root():
                 document.getElementById('problem').value = '';
                 loadProgress();
                 
-                // Refresh leaderboard if it is currently open
                 if (document.getElementById('leaderboard-section').style.display === 'block') {
                     document.getElementById('leaderboard-section').style.display = 'none';
                     toggleLeaderboard();
@@ -382,7 +474,6 @@ def get_leaderboard(github_user: Optional[str] = Cookie(None)):
     if not github_user:
         raise HTTPException(status_code=401, detail="Unauthorized. Please log in.")
     
-    # Run an aggregation pipeline to group by username and sum the total solved problems
     pipeline = [
         {"$group": {"_id": "$username", "solved": {"$sum": 1}}},
         {"$sort": {"solved": -1}},
@@ -390,6 +481,5 @@ def get_leaderboard(github_user: Optional[str] = Cookie(None)):
     ]
     results = list(collection.aggregate(pipeline))
     
-    # Format the data cleanly for the frontend
     leaderboard = [{"username": r["_id"], "solved": r["solved"]} for r in results]
     return leaderboard
